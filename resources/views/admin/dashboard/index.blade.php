@@ -64,13 +64,24 @@
         <!-- Main content -->
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4" style="margin-left: 16.666667%;">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2">Dashboard</h1>
+                <h1 class="h2">
+                    <i class="fas fa-tachometer-alt me-2 text-primary-custom"></i>
+                    Dashboard
+                    <small class="text-muted fs-6">Welcome back, {{ Auth::user()->name }}!</small>
+                </h1>
                 <div class="btn-toolbar mb-2 mb-md-0">
                     <div class="btn-group me-2">
                         <a href="{{ route('home') }}" class="btn btn-sm btn-outline-secondary" target="_blank">
                             <i class="fas fa-external-link-alt me-1"></i>
                             View Site
                         </a>
+                        <form method="POST" action="{{ route('logout') }}" class="d-inline">
+                            @csrf
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                <i class="fas fa-sign-out-alt me-1"></i>
+                                Logout
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -235,7 +246,7 @@
 
 <style>
 .border-left-primary {
-    border-left: 0.25rem solid #4e73df!important;
+    border-left: 0.25rem solid var(--primary-color)!important;
 }
 .border-left-success {
     border-left: 0.25rem solid #1cc88a!important;
@@ -244,7 +255,26 @@
     border-left: 0.25rem solid #36b9cc!important;
 }
 .border-left-warning {
-    border-left: 0.25rem solid #f6c23e!important;
+    border-left: 0.25rem solid var(--accent-yellow)!important;
+}
+
+.sidebar .nav-link {
+    color: #6c757d;
+    transition: all 0.3s ease;
+}
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active {
+    color: var(--primary-color);
+    background-color: rgba(37, 150, 190, 0.1);
+}
+
+.card {
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
 }
 </style>
 @endsection
