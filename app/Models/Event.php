@@ -21,6 +21,7 @@ class Event extends Model
         'slug'
     ];
 
+    // this code below is to change the fields format
     protected $casts = [
         'event_date' => 'datetime',
         'is_featured' => 'boolean',
