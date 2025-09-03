@@ -204,6 +204,11 @@
     --bg-start: #af2f2e;
     --bg-end: #8b2626;
 }
+
+.quick-action-btn.info {
+    --bg-start: #36b9cc;
+    --bg-end: #2c9cb4;
+}
 </style>
 @endsection
 
@@ -258,6 +263,12 @@
                             <a href="#" class="quick-action-btn danger">
                                 <i class="fas fa-cogs me-2"></i>
                                 Site Settings
+                            </a>
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <a href="{{ route('admin.pages.index') }}" class="quick-action-btn info">
+                                <i class="fas fa-file-alt me-2"></i>
+                                Manage Pages
                             </a>
                         </div>
                     </div>

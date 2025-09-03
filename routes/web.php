@@ -37,6 +37,8 @@ Route::post('/register', [RegistrationController::class, 'store'])->name('regist
 Route::prefix('admin')->name('admin.')->middleware(['admin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('events', AdminEventController::class);
+    Route::resource('pages', App\Http\Controllers\Admin\PageController::class);
+    Route::post('pages/upload-image', [App\Http\Controllers\Admin\PageController::class, 'uploadImage'])->name('pages.upload-image');
 });
 
 // Dynamic Pages (must be last)

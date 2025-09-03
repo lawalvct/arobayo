@@ -1,33 +1,83 @@
 @section('styles')
 <style>
-    /* Additional inline styles for slider images */
-    .hero-slide.slide-1 { background-image: url('{{ asset('uploads/slides/slider1.jpeg') }}'); }
-    .hero-slide.slide-2 { background-image: url('{{ asset('uploads/slides/slider2.jpeg') }}'); }
-    .hero-slide.slide-3 { background-image: url('{{ asset('uploads/slides/slider3.jpeg') }}'); }
+    /* Dynamic slider styles */
+    @if($homeContent && isset($homeContent['hero']['slides']))
+        @foreach($homeContent['hero']['slides'] as $index => $slide)
+        .hero-slide.slide-{{ $index + 1 }} {
+            background-image: url('{{ asset($slide['image'] ?? 'uploads/slides/slider' . ($index + 1) . '.jpeg') }}');
+        }
+        @endforeach
+    @else
+        .hero-slide.slide-1 { background-image: url('{{ asset('uploads/slides/slider1.jpeg') }}'); }
+        .hero-slide.slide-2 { background-image: url('{{ asset('uploads/slides/slider2.jpeg') }}'); }
+        .hero-slide.slide-3 { background-image: url('{{ asset('uploads/slides/slider3.jpeg') }}'); }
+    @endif
 </style>
 @endsection
 
 @section('content')
     <!-- Hero Slider Section -->
     <section class="hero-slider" id="heroSlider">
-        <!-- Slide 1 -->
-        <div class="hero-slide slide-1 active" data-slide="0">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-8">
-                        <div class="hero-content">
-                            <h1 class="hero-title">
-                                {{ $siteSettings['hero_title'] ?? 'Welcome to Egbe Arobayo' }}
-                            </h1>
-                            <p class="hero-subtitle">
-                                {{ $siteSettings['hero_subtitle'] ?? 'Preserving Yoruba culture, traditions, and values for future generations. Join us in celebrating our rich heritage.' }}
-                            </p>
-                            <div class="hero-buttons">
-                                <a href="{{ route('register') }}" class="btn btn-accent-yellow btn-lg">
-                                    <i class="fas fa-users me-2"></i>
-                                    Join Our Community
-                                </a>
-                                <a href="{{ route('events.index') }}" class="btn btn-outline-light btn-lg">
+        @if($homeContent && isset($homeContent['hero']['slides']) && count($homeContent['hero']['slides']) > 0)
+            @foreach($homeContent['hero']['slides'] as $index => $slide)
+                <div class="hero-slide slide-{{ $index + 1 }} {{ $index === 0 ? 'active' : '' }}" data-slide="{{ $index }}">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <div class="hero-content">
+                                    <h1 class="hero-title">
+                                        {{ $slide['title'] ?? 'Welcome to Egbe Arobayo' }}
+                                    </h1>
+                                    <p class="hero-subtitle">
+                                        {{ $slide['subtitle'] ?? 'Preserving Yoruba culture, traditions, and values for future generations.' }}
+                                    </p>
+                                    @if(!empty($slide['button_text']) && !empty($slide['button_link']))
+                                        <div class="hero-buttons">
+                                            <a href="{{ $slide['button_link'] }}" class="btn btn-accent-yellow btn-lg">
+                                                <i class="fas fa-arrow-right me-2"></i>
+                                                {{ $slide['button_text'] }}
+                                            </a>
+                                            <a href="{{ route('events.index') }}" class="btn btn-outline-light btn-lg">
+                                                <i class="fas fa-calendar me-2"></i>
+                                                View Events
+                                            </a>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        @else
+            <!-- Default slide if no content configured -->
+            <div class="hero-slide slide-1 active" data-slide="0">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="hero-content">
+                                <h1 class="hero-title">
+                                    Welcome to Egbe Arobayo
+                                </h1>
+                                <p class="hero-subtitle">
+                                    Preserving Yoruba culture, traditions, and values for future generations. Join us in celebrating our rich heritage.
+                                </p>
+                                <div class="hero-buttons">
+                                    <a href="{{ route('register') }}" class="btn btn-accent-yellow btn-lg">
+                                        <i class="fas fa-users me-2"></i>
+                                        Join Our Community
+                                    </a>
+                                    <a href="{{ route('events.index') }}" class="btn btn-outline-light btn-lg">
+                                        <i class="fas fa-calendar me-2"></i>
+                                        View Events
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
                                     <i class="fas fa-calendar me-2"></i>
                                     View Events
                                 </a>
@@ -96,9 +146,15 @@
 
         <!-- Slider Navigation Dots -->
         <div class="slider-nav">
-            <div class="slider-dot active" data-slide="0"></div>
-            <div class="slider-dot" data-slide="1"></div>
-            <div class="slider-dot" data-slide="2"></div>
+            @if($homeContent && isset($homeContent['hero']['slides']))
+                @foreach($homeContent['hero']['slides'] as $index => $slide)
+                    <div class="slider-dot {{ $index === 0 ? 'active' : '' }}" data-slide="{{ $index }}"></div>
+                @endforeach
+            @else
+                <div class="slider-dot active" data-slide="0"></div>
+                <div class="slider-dot" data-slide="1"></div>
+                <div class="slider-dot" data-slide="2"></div>
+            @endif
         </div>
 
         <!-- Slider Arrows -->

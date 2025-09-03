@@ -1,22 +1,47 @@
 @extends('layouts.app')
 
-@section('title', 'Home - Egbe Arobayo')
+@section('title', $homePage ? $homePage->title : 'Home - Egbe Arobayo')
 
-@include('pages.partials.home-slider')
+@if($homePage && $homeContent)
+    @if($homeContent['hero']['enabled'] ?? true)
+        @include('pages.partials.home-slider')
+    @endif
 
-@include('pages.partials.home-mission')
+    @if($homeContent['mission']['enabled'] ?? true)
+        @include('pages.partials.home-mission')
+    @endif
 
-    <!-- History Section -->
-    @include('pages.partials.home-history')
+    @if($homeContent['history']['enabled'] ?? true)
+        <!-- History Section -->
+        @include('pages.partials.home-history')
+    @endif
 
-    <!-- Executives Section -->
-    @include('pages.partials.home-executives')
+    @if($homeContent['executives']['enabled'] ?? true)
+        <!-- Executives Section -->
+        @include('pages.partials.home-executives')
+    @endif
 
-    <!-- Call to Action -->
-    @include('pages.partials.cta')
+    @if($homeContent['cta']['enabled'] ?? true)
+        <!-- Call to Action -->
+        @include('pages.partials.cta')
+    @endif
 
-    <!-- Latest Events Section -->
-@include('pages.partials.home-events')
+    @if($homeContent['events']['enabled'] ?? true)
+        <!-- Latest Events Section -->
+        @include('pages.partials.home-events')
+    @endif
+@else
+    <!-- Fallback content if no home page is configured -->
+    <div class="container py-5">
+        <div class="text-center">
+            <h1>Welcome to Egbe Arobayo</h1>
+            <p class="lead">Your website is being set up. Please check back soon!</p>
+            <a href="{{ route('admin.pages.index') }}" class="btn btn-primary">
+                Configure Home Page
+            </a>
+        </div>
+    </div>
+@endif
 
 
 

@@ -13,7 +13,12 @@ class HomeController extends Controller
 {
     public function index()
     {
+        // Get home page data
+        $homePage = \App\Models\Page::where('slug', 'home')->first();
+
         $data = [
+            'homePage' => $homePage,
+            'homeContent' => $homePage ? $homePage->home_content : null,
             'featuredEvents' => Event::active()->featured()->latest()->take(4)->get(),
             'executives' => Executive::active()->ordered()->get(),
             'galleryImages' => Gallery::active()->ordered()->take(8)->get(),

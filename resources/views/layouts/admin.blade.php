@@ -419,7 +419,7 @@
                     <i class="fas fa-users"></i>
                     Executives
                 </a>
-                <a href="#" class="sidebar-nav-item">
+                <a href="{{ route('admin.pages.index') }}" class="sidebar-nav-item {{ request()->routeIs('admin.pages.*') ? 'active' : '' }}">
                     <i class="fas fa-file-alt"></i>
                     Pages
                 </a>
