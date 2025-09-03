@@ -1,22 +1,13 @@
-@section('styles')
+<!-- Dynamic slider styles -->
 <style>
-    /* Dynamic slider styles */
-    @if($homeContent && isset($homeContent['hero']['slides']))
-        @foreach($homeContent['hero']['slides'] as $index => $slide)
-        .hero-slide.slide-{{ $index + 1 }} {
-            background-image: url('{{ asset($slide['image'] ?? 'uploads/slides/slider' . ($index + 1) . '.jpeg') }}');
-        }
-        @endforeach
-    @else
+  
         .hero-slide.slide-1 { background-image: url('{{ asset('uploads/slides/slider1.jpeg') }}'); }
         .hero-slide.slide-2 { background-image: url('{{ asset('uploads/slides/slider2.jpeg') }}'); }
         .hero-slide.slide-3 { background-image: url('{{ asset('uploads/slides/slider3.jpeg') }}'); }
-    @endif
-</style>
-@endsection
 
-@section('content')
-    <!-- Hero Slider Section -->
+</style>
+
+<!-- Hero Slider Section -->
     <section class="hero-slider" id="heroSlider">
         @if($homeContent && isset($homeContent['hero']['slides']) && count($homeContent['hero']['slides']) > 0)
             @foreach($homeContent['hero']['slides'] as $index => $slide)
@@ -77,72 +68,63 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Slide 2 -->
+            <div class="hero-slide slide-2" data-slide="1">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="hero-content">
+                                <h1 class="hero-title">
+                                    Cultural Preservation
+                                </h1>
+                                <p class="hero-subtitle">
+                                    Keeping our rich Yoruba traditions alive through education, events, and community engagement. Experience the beauty of our ancestral heritage.
+                                </p>
+                                <div class="hero-buttons">
+                                    <a href="{{ route('gallery.index') }}" class="btn btn-accent-yellow btn-lg">
+                                        <i class="fas fa-images me-2"></i>
+                                        View Gallery
+                                    </a>
+                                    <a href="#our-purpose" class="btn btn-outline-light btn-lg scroll-to">
+                                        <i class="fas fa-arrow-down me-2"></i>
+                                        Learn More
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="hero-slide slide-3" data-slide="2">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="hero-content">
+                                <h1 class="hero-title">
+                                    Community Unity
+                                </h1>
+                                <p class="hero-subtitle">
+                                    Building bridges between generations and fostering unity among Yoruba people worldwide. Together, we are stronger.
+                                </p>
+                                <div class="hero-buttons">
+                                    <a href="#leadership" class="btn btn-accent-yellow btn-lg scroll-to">
+                                        <i class="fas fa-crown me-2"></i>
+                                        Meet Our Leaders
+                                    </a>
+                                    <a href="{{ route('register') }}" class="btn btn-outline-light btn-lg">
+                                        <i class="fas fa-handshake me-2"></i>
+                                        Join Today
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         @endif
-                                    <i class="fas fa-calendar me-2"></i>
-                                    View Events
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 2 -->
-        <div class="hero-slide slide-2" data-slide="1">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-8">
-                        <div class="hero-content">
-                            <h1 class="hero-title">
-                                Cultural Preservation
-                            </h1>
-                            <p class="hero-subtitle">
-                                Keeping our rich Yoruba traditions alive through education, events, and community engagement. Experience the beauty of our ancestral heritage.
-                            </p>
-                            <div class="hero-buttons">
-                                <a href="{{ route('gallery.index') }}" class="btn btn-accent-yellow btn-lg">
-                                    <i class="fas fa-images me-2"></i>
-                                    View Gallery
-                                </a>
-                                <a href="#our-purpose" class="btn btn-outline-light btn-lg scroll-to">
-                                    <i class="fas fa-arrow-down me-2"></i>
-                                    Learn More
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 3 -->
-        <div class="hero-slide slide-3" data-slide="2">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-8">
-                        <div class="hero-content">
-                            <h1 class="hero-title">
-                                Community Unity
-                            </h1>
-                            <p class="hero-subtitle">
-                                Building bridges between generations and fostering unity among Yoruba people worldwide. Together, we are stronger.
-                            </p>
-                            <div class="hero-buttons">
-                                <a href="#leadership" class="btn btn-accent-yellow btn-lg scroll-to">
-                                    <i class="fas fa-crown me-2"></i>
-                                    Meet Our Leaders
-                                </a>
-                                <a href="{{ route('register') }}" class="btn btn-outline-light btn-lg">
-                                    <i class="fas fa-handshake me-2"></i>
-                                    Join Today
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- Slider Navigation Dots -->
         <div class="slider-nav">
@@ -196,3 +178,98 @@
             </div>
         </div>
     </section>
+
+<!-- Hero Slider JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const slides = document.querySelectorAll('.hero-slide');
+    const dots = document.querySelectorAll('.slider-dot');
+    const prevBtn = document.getElementById('prevSlide');
+    const nextBtn = document.getElementById('nextSlide');
+    let currentSlide = 0;
+    const totalSlides = slides.length;
+
+    // Auto-play interval (5 seconds)
+    let autoPlayInterval;
+
+    function showSlide(index) {
+        // Remove active class from all slides and dots
+        slides.forEach(slide => slide.classList.remove('active'));
+        dots.forEach(dot => dot.classList.remove('active'));
+
+        // Add active class to current slide and dot
+        slides[index].classList.add('active');
+        dots[index].classList.add('active');
+        currentSlide = index;
+    }
+
+    function nextSlide() {
+        const next = (currentSlide + 1) % totalSlides;
+        showSlide(next);
+    }
+
+    function prevSlide() {
+        const prev = (currentSlide - 1 + totalSlides) % totalSlides;
+        showSlide(prev);
+    }
+
+    function startAutoPlay() {
+        autoPlayInterval = setInterval(nextSlide, 5000);
+    }
+
+    function stopAutoPlay() {
+        clearInterval(autoPlayInterval);
+    }
+
+    // Event listeners for navigation
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            nextSlide();
+            stopAutoPlay();
+            setTimeout(startAutoPlay, 10000); // Restart auto-play after 10 seconds
+        });
+    }
+
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            prevSlide();
+            stopAutoPlay();
+            setTimeout(startAutoPlay, 10000); // Restart auto-play after 10 seconds
+        });
+    }
+
+    // Event listeners for dots
+    dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+            showSlide(index);
+            stopAutoPlay();
+            setTimeout(startAutoPlay, 10000); // Restart auto-play after 10 seconds
+        });
+    });
+
+    // Pause auto-play on hover
+    const heroSlider = document.getElementById('heroSlider');
+    if (heroSlider) {
+        heroSlider.addEventListener('mouseenter', stopAutoPlay);
+        heroSlider.addEventListener('mouseleave', startAutoPlay);
+    }
+
+    // Start auto-play
+    startAutoPlay();
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('.scroll-to').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                targetElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+});
+</script>
