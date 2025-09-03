@@ -90,7 +90,7 @@
             </h5>
             <div class="form-check form-switch">
                 <input class="form-check-input" type="checkbox" id="hero_enabled" name="hero_enabled"
-                       value="1" {{ old('hero_enabled', $homeSettings['hero']['enabled'] ?? true) ? 'checked' : '' }}>
+                       value="1" {{ old('hero_enabled', (isset($homeSettings['hero']['enabled']) && $homeSettings['hero']['enabled']) ? true : false) ? 'checked' : '' }}>
                 <label class="form-check-label text-white" for="hero_enabled">
                     Enable Section
                 </label>
@@ -99,7 +99,7 @@
         <div class="card-body" id="heroSection">
             <div id="heroSlides">
                 @php
-                    $slides = old('hero_slides', $homeSettings['hero']['slides'] ?? []);
+                    $slides = old('hero_slides', isset($homeSettings['hero']['slides']) && is_array($homeSettings['hero']['slides']) ? $homeSettings['hero']['slides'] : []);
                     if (empty($slides)) {
                         $slides = [['title' => '', 'subtitle' => '', 'button_text' => '', 'button_link' => '', 'image' => '']];
                     }
@@ -122,7 +122,7 @@
                                     <label class="form-label">Slide Title</label>
                                     <input type="text" class="form-control"
                                            name="hero_slides[{{ $index }}][title]"
-                                           value="{{ $slide['title'] ?? '' }}">
+                                           value="{{ isset($slide['title']) && !is_array($slide['title']) ? $slide['title'] : '' }}">
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -130,7 +130,7 @@
                                     <label class="form-label">Subtitle</label>
                                     <input type="text" class="form-control"
                                            name="hero_slides[{{ $index }}][subtitle]"
-                                           value="{{ $slide['subtitle'] ?? '' }}">
+                                           value="{{ isset($slide['subtitle']) && !is_array($slide['subtitle']) ? $slide['subtitle'] : '' }}">
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -138,7 +138,7 @@
                                     <label class="form-label">Button Text</label>
                                     <input type="text" class="form-control"
                                            name="hero_slides[{{ $index }}][button_text]"
-                                           value="{{ $slide['button_text'] ?? '' }}">
+                                           value="{{ isset($slide['button_text']) && !is_array($slide['button_text']) ? $slide['button_text'] : '' }}">
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -146,7 +146,7 @@
                                     <label class="form-label">Button Link</label>
                                     <input type="text" class="form-control"
                                            name="hero_slides[{{ $index }}][button_link]"
-                                           value="{{ $slide['button_link'] ?? '' }}">
+                                           value="{{ isset($slide['button_link']) && !is_array($slide['button_link']) ? $slide['button_link'] : '' }}">
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -155,7 +155,7 @@
                                     <div class="input-group">
                                         <input type="text" class="form-control"
                                                name="hero_slides[{{ $index }}][image]"
-                                               value="{{ $slide['image'] ?? '' }}"
+                                               value="{{ isset($slide['image']) && !is_array($slide['image']) ? $slide['image'] : '' }}"
                                                id="image_{{ $index }}">
                                         <button type="button" class="btn btn-outline-secondary"
                                                 onclick="selectImage('image_{{ $index }}')">
@@ -186,7 +186,7 @@
             </h5>
             <div class="form-check form-switch">
                 <input class="form-check-input" type="checkbox" id="mission_enabled" name="mission_enabled"
-                       value="1" {{ old('mission_enabled', $homeSettings['mission']['enabled'] ?? true) ? 'checked' : '' }}>
+                       value="1" {{ old('mission_enabled', (isset($homeSettings['mission']['enabled']) && $homeSettings['mission']['enabled']) ? true : false) ? 'checked' : '' }}>
                 <label class="form-check-label text-white" for="mission_enabled">
                     Enable Section
                 </label>
@@ -196,25 +196,25 @@
             <div class="mb-3">
                 <label class="form-label">Section Title</label>
                 <input type="text" class="form-control" name="mission_title"
-                       value="{{ old('mission_title', $homeSettings['mission']['title'] ?? 'Our Mission, Vision & Objectives') }}">
+                       value="{{ old('mission_title', (isset($homeSettings['mission']['title']) && !is_array($homeSettings['mission']['title'])) ? $homeSettings['mission']['title'] : 'Our Mission, Vision & Objectives') }}">
             </div>
             <div class="row">
                 <div class="col-md-4">
                     <div class="mb-3">
                         <label class="form-label">Vision</label>
-                        <textarea class="form-control" name="vision_text" rows="4">{{ old('vision_text', $homeSettings['mission']['vision'] ?? '') }}</textarea>
+                        <textarea class="form-control" name="vision_text" rows="4">{{ old('vision_text', (isset($homeSettings['mission']['vision']) && !is_array($homeSettings['mission']['vision'])) ? $homeSettings['mission']['vision'] : '') }}</textarea>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="mb-3">
                         <label class="form-label">Mission</label>
-                        <textarea class="form-control" name="mission_text" rows="4">{{ old('mission_text', $homeSettings['mission']['mission'] ?? '') }}</textarea>
+                        <textarea class="form-control" name="mission_text" rows="4">{{ old('mission_text', (isset($homeSettings['mission']['mission']) && !is_array($homeSettings['mission']['mission'])) ? $homeSettings['mission']['mission'] : '') }}</textarea>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="mb-3">
                         <label class="form-label">Objectives</label>
-                        <textarea class="form-control" name="objective_text" rows="4">{{ old('objective_text', $homeSettings['mission']['objective'] ?? '') }}</textarea>
+                        <textarea class="form-control" name="objective_text" rows="4">{{ old('objective_text', (isset($homeSettings['mission']['objective']) && !is_array($homeSettings['mission']['objective'])) ? $homeSettings['mission']['objective'] : '') }}</textarea>
                     </div>
                 </div>
             </div>
@@ -231,7 +231,7 @@
             </h5>
             <div class="form-check form-switch">
                 <input class="form-check-input" type="checkbox" id="history_enabled" name="history_enabled"
-                       value="1" {{ old('history_enabled', $homeSettings['history']['enabled'] ?? true) ? 'checked' : '' }}>
+                       value="1" {{ old('history_enabled', (isset($homeSettings['history']['enabled']) && $homeSettings['history']['enabled']) ? true : false) ? 'checked' : '' }}>
                 <label class="form-check-label text-white" for="history_enabled">
                     Enable Section
                 </label>
@@ -243,11 +243,11 @@
                     <div class="mb-3">
                         <label class="form-label">Section Title</label>
                         <input type="text" class="form-control" name="history_title"
-                               value="{{ old('history_title', $homeSettings['history']['title'] ?? 'Our History') }}">
+                               value="{{ old('history_title', (isset($homeSettings['history']['title']) && !is_array($homeSettings['history']['title'])) ? $homeSettings['history']['title'] : 'Our History') }}">
                     </div>
                     <div class="mb-3">
                         <label class="form-label">History Text</label>
-                        <textarea class="form-control" name="history_text" rows="6">{{ old('history_text', $homeSettings['history']['text'] ?? '') }}</textarea>
+                        <textarea class="form-control" name="history_text" rows="6">{{ old('history_text', (isset($homeSettings['history']['text']) && !is_array($homeSettings['history']['text'])) ? $homeSettings['history']['text'] : '') }}</textarea>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -255,7 +255,7 @@
                         <label class="form-label">History Image</label>
                         <div class="input-group">
                             <input type="text" class="form-control" name="history_image"
-                                   value="{{ old('history_image', $homeSettings['history']['image'] ?? '') }}"
+                                   value="{{ old('history_image', (isset($homeSettings['history']['image']) && !is_array($homeSettings['history']['image'])) ? $homeSettings['history']['image'] : '') }}"
                                    id="history_image">
                             <button type="button" class="btn btn-outline-secondary" onclick="selectImage('history_image')">
                                 <i class="fas fa-image"></i>
@@ -263,7 +263,7 @@
                         </div>
                     </div>
                     <div class="history-image-preview mt-2" style="max-height: 200px; overflow: hidden;">
-                        @if(!empty($homeSettings['history']['image']))
+                        @if(isset($homeSettings['history']['image']) && !empty($homeSettings['history']['image']) && !is_array($homeSettings['history']['image']))
                             <img src="{{ $homeSettings['history']['image'] }}" class="img-fluid rounded" alt="History Image">
                         @endif
                     </div>
@@ -285,14 +285,14 @@
                     </h6>
                     <div class="form-check form-switch">
                         <input class="form-check-input" type="checkbox" id="executives_enabled" name="executives_enabled"
-                               value="1" {{ old('executives_enabled', $homeSettings['executives']['enabled'] ?? true) ? 'checked' : '' }}>
+                               value="1" {{ old('executives_enabled', (isset($homeSettings['executives']['enabled']) && $homeSettings['executives']['enabled']) ? true : false) ? 'checked' : '' }}>
                     </div>
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
                         <label class="form-label">Section Title</label>
                         <input type="text" class="form-control" name="executives_title"
-                               value="{{ old('executives_title', $homeSettings['executives']['title'] ?? 'Our Executives') }}">
+                               value="{{ old('executives_title', (isset($homeSettings['executives']['title']) && !is_array($homeSettings['executives']['title'])) ? $homeSettings['executives']['title'] : 'Our Executives') }}">
                     </div>
                 </div>
             </div>
@@ -309,28 +309,28 @@
                     </h6>
                     <div class="form-check form-switch">
                         <input class="form-check-input" type="checkbox" id="cta_enabled" name="cta_enabled"
-                               value="1" {{ old('cta_enabled', $homeSettings['cta']['enabled'] ?? true) ? 'checked' : '' }}>
+                               value="1" {{ old('cta_enabled', (isset($homeSettings['cta']['enabled']) && $homeSettings['cta']['enabled']) ? true : false) ? 'checked' : '' }}>
                     </div>
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
                         <label class="form-label">CTA Title</label>
                         <input type="text" class="form-control" name="cta_title"
-                               value="{{ old('cta_title', $homeSettings['cta']['title'] ?? 'Join Egbe Arobayo Today') }}">
+                               value="{{ old('cta_title', (isset($homeSettings['cta']['title']) && !is_array($homeSettings['cta']['title'])) ? $homeSettings['cta']['title'] : 'Join Egbe Arobayo Today') }}">
                     </div>
                     <div class="mb-3">
                         <label class="form-label">CTA Text</label>
-                        <textarea class="form-control" name="cta_text" rows="3">{{ old('cta_text', $homeSettings['cta']['text'] ?? '') }}</textarea>
+                        <textarea class="form-control" name="cta_text" rows="3">{{ old('cta_text', (isset($homeSettings['cta']['text']) && !is_array($homeSettings['cta']['text'])) ? $homeSettings['cta']['text'] : '') }}</textarea>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Button Text</label>
                         <input type="text" class="form-control" name="cta_button_text"
-                               value="{{ old('cta_button_text', $homeSettings['cta']['button_text'] ?? 'Register Now') }}">
+                               value="{{ old('cta_button_text', (isset($homeSettings['cta']['button_text']) && !is_array($homeSettings['cta']['button_text'])) ? $homeSettings['cta']['button_text'] : 'Register Now') }}">
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Button Link</label>
                         <input type="text" class="form-control" name="cta_button_link"
-                               value="{{ old('cta_button_link', $homeSettings['cta']['button_link'] ?? '/register') }}">
+                               value="{{ old('cta_button_link', (isset($homeSettings['cta']['button_link']) && !is_array($homeSettings['cta']['button_link'])) ? $homeSettings['cta']['button_link'] : '/register') }}">
                     </div>
                 </div>
             </div>
@@ -347,14 +347,14 @@
                     </h6>
                     <div class="form-check form-switch">
                         <input class="form-check-input" type="checkbox" id="events_enabled" name="events_enabled"
-                               value="1" {{ old('events_enabled', $homeSettings['events']['enabled'] ?? true) ? 'checked' : '' }}>
+                               value="1" {{ old('events_enabled', (isset($homeSettings['events']['enabled']) && $homeSettings['events']['enabled']) ? true : false) ? 'checked' : '' }}>
                     </div>
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
                         <label class="form-label">Section Title</label>
                         <input type="text" class="form-control" name="events_title"
-                               value="{{ old('events_title', $homeSettings['events']['title'] ?? 'Latest Events') }}">
+                               value="{{ old('events_title', (isset($homeSettings['events']['title']) && !is_array($homeSettings['events']['title'])) ? $homeSettings['events']['title'] : 'Latest Events') }}">
                     </div>
                 </div>
             </div>
