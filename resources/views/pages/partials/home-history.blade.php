@@ -2,7 +2,7 @@
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-6 mb-5 mb-lg-0">
-                    <img src="{{ $siteSettings['history_image'] ?? '/images/history-default.jpg' }}"
+                    <img src="{{ $siteSettings['history_image'] ?? '/images/logo.png' }}"
                          alt="Our History"
                          class="img-fluid rounded shadow">
                 </div>
