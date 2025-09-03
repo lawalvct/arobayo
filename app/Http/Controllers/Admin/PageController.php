@@ -50,7 +50,32 @@ class PageController extends Controller
 
     public function show(Page $page)
     {
-        return view('admin.pages.show', compact('page'));
+        $data = ['page' => $page];
+
+        // If it's a home page, get the parsed home content
+        if ($page->isHomePage()) {
+            try {
+                $homeContent = $page->home_content;
+                // Ensure it's an array
+                if (is_array($homeContent)) {
+                    $data['homeContent'] = $homeContent;
+                    
+                    // Add individual section enabled flags
+                    $data['heroEnabled'] = $homeContent['hero']['enabled'] ?? true;
+                    $data['missionEnabled'] = $homeContent['mission']['enabled'] ?? true;
+                    $data['historyEnabled'] = $homeContent['history']['enabled'] ?? true;
+                    $data['executivesEnabled'] = $homeContent['executives']['enabled'] ?? true;
+                    $data['ctaEnabled'] = $homeContent['cta']['enabled'] ?? true;
+                    $data['eventsEnabled'] = $homeContent['events']['enabled'] ?? true;
+                } else {
+                    $data['homeContent'] = null;
+                }
+            } catch (\Exception $e) {
+                $data['homeContent'] = null;
+            }
+        }
+
+        return view('admin.pages.show', $data);
     }
 
     public function edit(Page $page)

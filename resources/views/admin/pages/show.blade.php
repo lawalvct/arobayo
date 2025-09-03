@@ -3,320 +3,447 @@
 @section('title', 'View Page - Egbe Arobayo')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h2 class="admin-page-title">
-            <i class="fas fa-eye me-3"></i>
-            View Page
-        </h2>
-        <p class="admin-page-subtitle mb-0">
-            Preview "{{ $page->title }}"
-        </p>
-    </div>
-    <div>
-        <a href="{{ route('admin.pages.index') }}" class="btn btn-secondary me-2">
-            <i class="fas fa-arrow-left me-2"></i>
-            Back to Pages
-        </a>
-        <a href="{{ route('admin.pages.edit', $page) }}" class="btn btn-outline-primary me-2">
-            <i class="fas fa-edit me-2"></i>
-            Edit Page
-        </a>
-        <a href="{{ url($page->slug === 'home' ? '/' : '/' . $page->slug) }}"
-           class="btn btn-outline-success" target="_blank">
-            <i class="fas fa-external-link-alt me-2"></i>
-            View Live
-        </a>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-lg-8">
-        <!-- Page Preview -->
-        <div class="admin-card mb-4">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">
-                    <i class="fas fa-desktop me-2"></i>
-                    Page Preview
-                </h5>
-            </div>
-            <div class="card-body">
-                @if($page->isHomePage())
-                    <div class="alert alert-info">
-                        <i class="fas fa-info-circle me-2"></i>
-                        This is the home page with special sections. The content below is stored in JSON format.
-                        <a href="{{ route('admin.pages.edit', $page) }}" class="alert-link">Edit home sections</a>
-                    </div>
-
-                    @php
-                        $homeContent = $page->home_content;
-                    @endphp
-
-                    <div class="home-sections-preview">
-                        <!-- Hero Section -->
-                        <div class="section-preview mb-4">
-                            <div class="d-flex align-items-center mb-3">
-                                <h6 class="mb-0 me-3">Hero/Slider Section</h6>
-                                <span class="badge {{ $homeContent['hero']['enabled'] ? 'bg-success' : 'bg-danger' }}">
-                                    {{ $homeContent['hero']['enabled'] ? 'Enabled' : 'Disabled' }}
-                                </span>
-                            </div>
-                            @if($homeContent['hero']['enabled'] && !empty($homeContent['hero']['slides']))
-                                <div class="row">
-                                    @foreach($homeContent['hero']['slides'] as $index => $slide)
-                                        <div class="col-md-6 mb-3">
-                                            <div class="card border-primary">
-                                                <div class="card-header bg-primary text-white py-2">
-                                                    <small>Slide {{ $index + 1 }}</small>
-                                                </div>
-                                                <div class="card-body">
-                                                    <h6 class="card-title">{{ $slide['title'] ?? 'No Title' }}</h6>
-                                                    <p class="card-text text-muted">{{ $slide['subtitle'] ?? 'No Subtitle' }}</p>
-                                                    @if(!empty($slide['button_text']))
-                                                        <a href="#" class="btn btn-sm btn-primary">{{ $slide['button_text'] }}</a>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            @endif
-                        </div>
-
-                        <!-- Mission Section -->
-                        <div class="section-preview mb-4">
-                            <div class="d-flex align-items-center mb-3">
-                                <h6 class="mb-0 me-3">{{ $homeContent['mission']['title'] ?? 'Mission Section' }}</h6>
-                                <span class="badge {{ $homeContent['mission']['enabled'] ? 'bg-success' : 'bg-danger' }}">
-                                    {{ $homeContent['mission']['enabled'] ? 'Enabled' : 'Disabled' }}
-                                </span>
-                            </div>
-                            @if($homeContent['mission']['enabled'])
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <h6 class="card-title text-primary">Vision</h6>
-                                                <p class="card-text">{{ $homeContent['mission']['vision'] ?? 'No vision text' }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <h6 class="card-title text-success">Mission</h6>
-                                                <p class="card-text">{{ $homeContent['mission']['mission'] ?? 'No mission text' }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <h6 class="card-title text-info">Objectives</h6>
-                                                <p class="card-text">{{ $homeContent['mission']['objective'] ?? 'No objective text' }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endif
-                        </div>
-
-                        <!-- History Section -->
-                        <div class="section-preview mb-4">
-                            <div class="d-flex align-items-center mb-3">
-                                <h6 class="mb-0 me-3">{{ $homeContent['history']['title'] ?? 'History Section' }}</h6>
-                                <span class="badge {{ $homeContent['history']['enabled'] ? 'bg-success' : 'bg-danger' }}">
-                                    {{ $homeContent['history']['enabled'] ? 'Enabled' : 'Disabled' }}
-                                </span>
-                            </div>
-                            @if($homeContent['history']['enabled'])
-                                <div class="card">
-                                    <div class="card-body">
-                                        <p>{{ $homeContent['history']['text'] ?? 'No history text' }}</p>
-                                        @if(!empty($homeContent['history']['image']))
-                                            <small class="text-muted">Image: {{ $homeContent['history']['image'] }}</small>
-                                        @endif
-                                    </div>
-                                </div>
-                            @endif
-                        </div>
-
-                        <!-- Other sections -->
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="section-preview mb-4">
-                                    <div class="d-flex align-items-center mb-2">
-                                        <h6 class="mb-0 me-2">Executives</h6>
-                                        <span class="badge {{ $homeContent['executives']['enabled'] ? 'bg-success' : 'bg-danger' }}">
-                                            {{ $homeContent['executives']['enabled'] ? 'On' : 'Off' }}
-                                        </span>
-                                    </div>
-                                    <small class="text-muted">{{ $homeContent['executives']['title'] ?? 'Our Executives' }}</small>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="section-preview mb-4">
-                                    <div class="d-flex align-items-center mb-2">
-                                        <h6 class="mb-0 me-2">Call to Action</h6>
-                                        <span class="badge {{ $homeContent['cta']['enabled'] ? 'bg-success' : 'bg-danger' }}">
-                                            {{ $homeContent['cta']['enabled'] ? 'On' : 'Off' }}
-                                        </span>
-                                    </div>
-                                    <small class="text-muted">{{ $homeContent['cta']['title'] ?? 'Join Us Today' }}</small>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="section-preview mb-4">
-                                    <div class="d-flex align-items-center mb-2">
-                                        <h6 class="mb-0 me-2">Latest Events</h6>
-                                        <span class="badge {{ $homeContent['events']['enabled'] ? 'bg-success' : 'bg-danger' }}">
-                                            {{ $homeContent['events']['enabled'] ? 'On' : 'Off' }}
-                                        </span>
-                                    </div>
-                                    <small class="text-muted">{{ $homeContent['events']['title'] ?? 'Latest Events' }}</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @else
-                    <!-- Regular page content -->
-                    <div class="page-content-preview">
-                        {!! $page->content !!}
-                    </div>
-                @endif
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="admin-page-title mb-1">
+                        <i class="fas fa-eye text-primary me-2"></i>
+                        {{ $page->title }}
+                    </h2>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="{{ route('admin.pages.index') }}" class="text-decoration-none">
+                                    <i class="fas fa-file-alt me-1"></i>Pages
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active">{{ $page->title }}</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="{{ route('admin.pages.index') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i>
+                        Back
+                    </a>
+                    <a href="{{ route('admin.pages.edit', $page) }}" class="btn btn-primary">
+                        <i class="fas fa-edit me-1"></i>
+                        Edit
+                    </a>
+                    <a href="{{ url($page->slug === 'home' ? '/' : '/' . $page->slug) }}"
+                       class="btn btn-success" target="_blank">
+                        <i class="fas fa-external-link-alt me-1"></i>
+                        View Live
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="col-lg-4">
-        <!-- Page Details -->
-        <div class="admin-card mb-4">
-            <div class="card-header bg-info text-white">
-                <h5 class="mb-0">
-                    <i class="fas fa-info-circle me-2"></i>
-                    Page Details
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="row g-3">
-                    <div class="col-12">
-                        <div class="d-flex justify-content-between">
-                            <span class="text-muted">Status:</span>
-                            <span>
-                                @if($page->is_active)
-                                    <span class="badge bg-success">
-                                        <i class="fas fa-eye me-1"></i>
-                                        Active
-                                    </span>
-                                @else
-                                    <span class="badge bg-danger">
-                                        <i class="fas fa-eye-slash me-1"></i>
-                                        Inactive
-                                    </span>
-                                @endif
+    <!-- Main Content Area -->
+    <div class="row">
+        <!-- Left Column - Page Content -->
+        <div class="col-xl-8 col-lg-7 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-gradient-primary text-white">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-desktop me-2"></i>
+                        <h5 class="mb-0">Page Preview</h5>
+                        @if($page->isHomePage())
+                            <span class="badge bg-warning ms-auto">
+                                <i class="fas fa-home me-1"></i>
+                                Home Page
                             </span>
-                        </div>
+                        @endif
                     </div>
-                    <div class="col-12">
-                        <div class="d-flex justify-content-between">
-                            <span class="text-muted">Template:</span>
-                            <span>
-                                <span class="badge {{ $page->template === 'home' ? 'bg-warning' : 'bg-secondary' }}">
-                                    {{ ucfirst($page->template) }}
-                                </span>
-                            </span>
+                </div>
+                <div class="card-body p-0">
+                    @if($page->isHomePage())
+                        <!-- Home Page Sections -->
+                        <div class="bg-light p-3 border-bottom">
+                            <div class="alert alert-info mb-0">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Special Home Page:</strong> This page contains dynamic sections stored in JSON format.
+                                <a href="{{ route('admin.pages.edit', $page) }}" class="alert-link">
+                                    <i class="fas fa-cog ms-2"></i>Manage Sections
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="d-flex justify-content-between">
-                            <span class="text-muted">URL:</span>
-                            <span class="fw-bold text-primary">
-                                /{{ $page->slug === 'home' ? '' : $page->slug }}
-                            </span>
+
+                        <div class="p-4">
+
+                            @if(isset($homeContent) && is_array($homeContent) && !empty($homeContent))
+                                @php
+                                    // Safely get values with defaults
+                                    $heroEnabled = isset($homeContent['hero']['enabled']) ? $homeContent['hero']['enabled'] : true;
+                                    $heroSlides = isset($homeContent['hero']['slides']) && is_array($homeContent['hero']['slides']) ? $homeContent['hero']['slides'] : [];
+                                    $missionEnabled = isset($homeContent['mission']['enabled']) ? $homeContent['mission']['enabled'] : true;
+                                    $historyEnabled = isset($homeContent['history']['enabled']) ? $homeContent['history']['enabled'] : true;
+                                    $executivesEnabled = isset($homeContent['executives']['enabled']) ? $homeContent['executives']['enabled'] : true;
+                                    $ctaEnabled = isset($homeContent['cta']['enabled']) ? $homeContent['cta']['enabled'] : true;
+                                    $eventsEnabled = isset($homeContent['events']['enabled']) ? $homeContent['events']['enabled'] : true;
+                                @endphp
+
+                                <!-- Hero/Slider Section -->
+                                <div class="section-preview-card mb-4">
+                                    <div class="section-header">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-images text-primary me-2"></i>
+                                            <h6 class="mb-0 fw-bold">Hero/Slider Section</h6>
+                                        </div>
+                                        <span class="badge {{ $heroEnabled ? 'bg-success' : 'bg-danger' }} px-3">
+                                            <i class="fas fa-{{ $heroEnabled ? 'check' : 'times' }} me-1"></i>
+                                            {{ $heroEnabled ? 'Enabled' : 'Disabled' }}
+                                        </span>
+                                    </div>
+                                    @if($heroEnabled && !empty($heroSlides))
+                                        <div class="section-content">
+                                            <div class="row g-3">
+                                                @foreach($heroSlides as $index => $slide)
+                                                    <div class="col-lg-6">
+                                                        <div class="slide-card">
+                                                            <div class="slide-header">
+                                                                <i class="fas fa-play-circle me-1"></i>
+                                                                Slide {{ $index + 1 }}
+                                                            </div>
+                                                            <div class="slide-content">
+                                                                <h6 class="slide-title">
+                                                                    {{ is_array($slide['title'] ?? 'No Title') ? 'Array Data' : ($slide['title'] ?? 'No Title') }}
+                                                                </h6>
+                                                                <p class="slide-subtitle">
+                                                                    {{ is_array($slide['subtitle'] ?? 'No Subtitle') ? 'Array Data' : \Illuminate\Support\Str::limit($slide['subtitle'] ?? 'No Subtitle', 80) }}
+                                                                </p>
+                                                                @if(!empty($slide['button_text']) && !is_array($slide['button_text']))
+                                                                    <span class="btn-preview">
+                                                                        <i class="fas fa-mouse-pointer me-1"></i>
+                                                                        {{ $slide['button_text'] }}
+                                                                    </span>
+                                                                @endif
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    @else
+                                        <div class="section-empty">
+                                            <i class="fas fa-image"></i>
+                                            <p>No slides configured or section is disabled</p>
+                                        </div>
+                                    @endif
+                                </div>
+
+                                <!-- Mission/Vision/Objectives Section -->
+                                <div class="section-preview-card mb-4">
+                                    <div class="section-header">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-bullseye text-success me-2"></i>
+                                            <h6 class="mb-0 fw-bold">Mission, Vision & Objectives</h6>
+                                        </div>
+                                        <span class="badge {{ $missionEnabled ? 'bg-success' : 'bg-danger' }} px-3">
+                                            <i class="fas fa-{{ $missionEnabled ? 'check' : 'times' }} me-1"></i>
+                                            {{ $missionEnabled ? 'Enabled' : 'Disabled' }}
+                                        </span>
+                                    </div>
+                                    @if($missionEnabled)
+                                        <div class="section-content">
+                                            <div class="row g-3">
+                                                <div class="col-md-4">
+                                                    <div class="mission-card vision-card">
+                                                        <div class="mission-icon">
+                                                            <i class="fas fa-eye"></i>
+                                                        </div>
+                                                        <h6 class="mission-title">Vision</h6>
+                                                        <p class="mission-text">{{ isset($homeContent['mission']['vision']) ? (is_array($homeContent['mission']['vision']) ? 'Array Data' : $homeContent['mission']['vision']) : 'No vision text' }}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="mission-card mission-card-main">
+                                                        <div class="mission-icon">
+                                                            <i class="fas fa-bullseye"></i>
+                                                        </div>
+                                                        <h6 class="mission-title">Mission</h6>
+                                                        <p class="mission-text">{{ isset($homeContent['mission']['mission']) ? (is_array($homeContent['mission']['mission']) ? 'Array Data' : $homeContent['mission']['mission']) : 'No mission text' }}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="mission-card objectives-card">
+                                                        <div class="mission-icon">
+                                                            <i class="fas fa-target"></i>
+                                                        </div>
+                                                        <h6 class="mission-title">Objectives</h6>
+                                                        <p class="mission-text">{{ isset($homeContent['mission']['objective']) ? (is_array($homeContent['mission']['objective']) ? 'Array Data' : $homeContent['mission']['objective']) : 'No objective text' }}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <div class="section-empty">
+                                            <i class="fas fa-bullseye"></i>
+                                            <p>Mission section is disabled</p>
+                                        </div>
+                                    @endif
+                                </div>
+
+                                <!-- History Section -->
+                                <div class="section-preview-card mb-4">
+                                    <div class="section-header">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-history text-info me-2"></i>
+                                            <h6 class="mb-0 fw-bold">{{ isset($homeContent['history']['title']) ? (is_array($homeContent['history']['title']) ? 'Array Data' : $homeContent['history']['title']) : 'History Section' }}</h6>
+                                        </div>
+                                        <span class="badge {{ $historyEnabled ? 'bg-success' : 'bg-danger' }} px-3">
+                                            <i class="fas fa-{{ $historyEnabled ? 'check' : 'times' }} me-1"></i>
+                                            {{ $historyEnabled ? 'Enabled' : 'Disabled' }}
+                                        </span>
+                                    </div>
+                                    @if($historyEnabled)
+                                        <div class="section-content">
+                                            <div class="history-preview">
+                                                <p class="history-text">{{ isset($homeContent['history']['text']) ? (is_array($homeContent['history']['text']) ? 'Array Data' : \Illuminate\Support\Str::limit($homeContent['history']['text'], 200)) : 'No history text' }}</p>
+                                                @if(isset($homeContent['history']['image']) && !empty($homeContent['history']['image']) && !is_array($homeContent['history']['image']))
+                                                    <div class="history-image">
+                                                        <i class="fas fa-image me-2"></i>
+                                                        <span class="text-muted">Image: {{ $homeContent['history']['image'] }}</span>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    @else
+                                        <div class="section-empty">
+                                            <i class="fas fa-history"></i>
+                                            <p>History section is disabled</p>
+                                        </div>
+                                    @endif
+                                </div>
+
+                                <!-- Additional Sections Summary -->
+                                <div class="section-preview-card mb-4">
+                                    <div class="section-header">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-th-large text-warning me-2"></i>
+                                            <h6 class="mb-0 fw-bold">Other Sections</h6>
+                                        </div>
+                                    </div>
+                                    <div class="section-content">
+                                        <div class="row g-3">
+                                            <div class="col-lg-4">
+                                                <div class="other-section-card">
+                                                    <div class="section-icon executives">
+                                                        <i class="fas fa-users"></i>
+                                                    </div>
+                                                    <h6>Executives</h6>
+                                                    <p>{{ isset($homeContent['executives']['title']) ? (is_array($homeContent['executives']['title']) ? 'Array Data' : $homeContent['executives']['title']) : 'Our Executives' }}</p>
+                                                    <span class="badge {{ $executivesEnabled ? 'bg-success' : 'bg-danger' }}">
+                                                        {{ $executivesEnabled ? 'Enabled' : 'Disabled' }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <div class="other-section-card">
+                                                    <div class="section-icon cta">
+                                                        <i class="fas fa-bullhorn"></i>
+                                                    </div>
+                                                    <h6>Call to Action</h6>
+                                                    <p>{{ isset($homeContent['cta']['title']) ? (is_array($homeContent['cta']['title']) ? 'Array Data' : $homeContent['cta']['title']) : 'Join Us Today' }}</p>
+                                                    <span class="badge {{ $ctaEnabled ? 'bg-success' : 'bg-danger' }}">
+                                                        {{ $ctaEnabled ? 'Enabled' : 'Disabled' }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <div class="other-section-card">
+                                                    <div class="section-icon events">
+                                                        <i class="fas fa-calendar-alt"></i>
+                                                    </div>
+                                                    <h6>Latest Events</h6>
+                                                    <p>{{ isset($homeContent['events']['title']) ? (is_array($homeContent['events']['title']) ? 'Array Data' : $homeContent['events']['title']) : 'Latest Events' }}</p>
+                                                    <span class="badge {{ $eventsEnabled ? 'bg-success' : 'bg-danger' }}">
+                                                        {{ $eventsEnabled ? 'Enabled' : 'Disabled' }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @else
+                                <div class="no-content-warning">
+                                    <div class="text-center p-5">
+                                        <i class="fas fa-exclamation-triangle text-warning fa-3x mb-3"></i>
+                                        <h5>Home Page Content Not Available</h5>
+                                        <p class="text-muted">The home page content is not properly configured.</p>
+                                        <a href="{{ route('admin.pages.edit', $page) }}" class="btn btn-primary">
+                                            <i class="fas fa-cog me-2"></i>Configure Home Page
+                                        </a>
+                                    </div>
+                                </div>
+                            @endif
                         </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="d-flex justify-content-between">
-                            <span class="text-muted">Created:</span>
-                            <span>{{ $page->created_at->format('M d, Y h:i A') }}</span>
+                    @else
+                        <!-- Regular Page Content -->
+                        <div class="p-4">
+                            <div class="regular-page-preview">
+                                <div class="content-preview">
+                                    {!! $page->content !!}
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="d-flex justify-content-between">
-                            <span class="text-muted">Modified:</span>
-                            <span>{{ $page->updated_at->format('M d, Y h:i A') }}</span>
-                        </div>
-                    </div>
-                    @if($page->updated_at != $page->created_at)
-                    <div class="col-12">
-                        <div class="d-flex justify-content-between">
-                            <span class="text-muted">Last Update:</span>
-                            <span class="text-success">{{ $page->updated_at->diffForHumans() }}</span>
-                        </div>
-                    </div>
                     @endif
                 </div>
             </div>
         </div>
 
-        <!-- SEO Information -->
-        @if($page->meta_title || $page->meta_description)
-        <div class="admin-card mb-4">
-            <div class="card-header bg-success text-white">
-                <h5 class="mb-0">
-                    <i class="fas fa-search me-2"></i>
-                    SEO Information
-                </h5>
-            </div>
-            <div class="card-body">
-                @if($page->meta_title)
-                    <div class="mb-3">
-                        <label class="form-label text-muted">Meta Title:</label>
-                        <p class="fw-bold">{{ $page->meta_title }}</p>
-                    </div>
-                @endif
-                @if($page->meta_description)
-                    <div class="mb-3">
-                        <label class="form-label text-muted">Meta Description:</label>
-                        <p>{{ $page->meta_description }}</p>
-                    </div>
-                @endif
-                @if(!$page->meta_title && !$page->meta_description)
-                    <p class="text-muted mb-0">
+        <!-- Right Column - Page Information -->
+        <div class="col-xl-4 col-lg-5">
+            <!-- Page Status Card -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-gradient-info text-white">
+                    <h5 class="mb-0">
                         <i class="fas fa-info-circle me-2"></i>
-                        No custom SEO settings. Using default page title.
-                    </p>
-                @endif
-            </div>
-        </div>
-        @endif
+                        Page Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-toggle-{{ $page->is_active ? 'on text-success' : 'off text-danger' }} me-2"></i>
+                                Status
+                            </div>
+                            <div class="info-value">
+                                <span class="badge {{ $page->is_active ? 'bg-success' : 'bg-danger' }} px-3">
+                                    <i class="fas fa-{{ $page->is_active ? 'eye' : 'eye-slash' }} me-1"></i>
+                                    {{ $page->is_active ? 'Published' : 'Draft' }}
+                                </span>
+                            </div>
+                        </div>
 
-        <!-- Quick Actions -->
-        <div class="admin-card">
-            <div class="card-header bg-warning text-dark">
-                <h5 class="mb-0">
-                    <i class="fas fa-bolt me-2"></i>
-                    Quick Actions
-                </h5>
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-layer-group me-2"></i>
+                                Template
+                            </div>
+                            <div class="info-value">
+                                <span class="badge {{ $page->template === 'home' ? 'bg-warning' : 'bg-secondary' }} px-3">
+                                    <i class="fas fa-{{ $page->template === 'home' ? 'home' : 'file-alt' }} me-1"></i>
+                                    {{ ucfirst($page->template) }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-link me-2"></i>
+                                URL
+                            </div>
+                            <div class="info-value">
+                                <code class="url-display">/{{ $page->slug === 'home' ? '' : $page->slug }}</code>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-calendar-plus me-2"></i>
+                                Created
+                            </div>
+                            <div class="info-value">
+                                <small>{{ $page->created_at->format('M d, Y') }}</small>
+                                <br>
+                                <small class="text-muted">{{ $page->created_at->format('h:i A') }}</small>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-calendar-edit me-2"></i>
+                                Last Modified
+                            </div>
+                            <div class="info-value">
+                                <small>{{ $page->updated_at->format('M d, Y') }}</small>
+                                <br>
+                                <small class="text-success">{{ $page->updated_at->diffForHumans() }}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="card-body">
-                <div class="d-grid gap-2">
-                    <a href="{{ route('admin.pages.edit', $page) }}" class="btn admin-btn-primary">
-                        <i class="fas fa-edit me-2"></i>
-                        Edit Page
-                    </a>
-                    <a href="{{ url($page->slug === 'home' ? '/' : '/' . $page->slug) }}"
-                       class="btn btn-outline-success" target="_blank">
-                        <i class="fas fa-external-link-alt me-2"></i>
-                        View Live Page
-                    </a>
-                    @if($page->slug !== 'home')
-                        <button type="button" class="btn btn-outline-danger"
-                                onclick="confirmDelete('{{ $page->id }}', '{{ $page->title }}')">
-                            <i class="fas fa-trash me-2"></i>
-                            Delete Page
-                        </button>
+
+            <!-- SEO Information -->
+            @if($page->meta_title || $page->meta_description)
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-gradient-success text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-search me-2"></i>
+                        SEO Settings
+                    </h5>
+                </div>
+                <div class="card-body">
+                    @if($page->meta_title)
+                        <div class="seo-item mb-3">
+                            <label class="seo-label">
+                                <i class="fas fa-heading me-2"></i>Meta Title
+                            </label>
+                            <div class="seo-content">{{ $page->meta_title }}</div>
+                        </div>
                     @endif
+                    @if($page->meta_description)
+                        <div class="seo-item">
+                            <label class="seo-label">
+                                <i class="fas fa-align-left me-2"></i>Meta Description
+                            </label>
+                            <div class="seo-content">{{ $page->meta_description }}</div>
+                        </div>
+                    @endif
+                </div>
+            </div>
+            @else
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-gradient-warning text-dark">
+                    <h5 class="mb-0">
+                        <i class="fas fa-search me-2"></i>
+                        SEO Settings
+                    </h5>
+                </div>
+                <div class="card-body text-center">
+                    <i class="fas fa-exclamation-circle text-warning fa-2x mb-3"></i>
+                    <p class="text-muted mb-3">No custom SEO settings configured</p>
+                    <a href="{{ route('admin.pages.edit', $page) }}" class="btn btn-sm btn-warning">
+                        <i class="fas fa-plus me-1"></i>Add SEO Settings
+                    </a>
+                </div>
+            </div>
+            @endif
+
+            <!-- Quick Actions -->
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-gradient-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-bolt me-2"></i>
+                        Quick Actions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="action-buttons">
+                        <a href="{{ route('admin.pages.edit', $page) }}" class="action-btn primary">
+                            <i class="fas fa-edit"></i>
+                            <span>Edit Page</span>
+                        </a>
+                        <a href="{{ url($page->slug === 'home' ? '/' : '/' . $page->slug) }}"
+                           class="action-btn success" target="_blank">
+                            <i class="fas fa-external-link-alt"></i>
+                            <span>View Live</span>
+                        </a>
+                        @if($page->slug !== 'home')
+                            <button type="button" class="action-btn danger"
+                                    onclick="confirmDelete('{{ $page->id }}', '{{ $page->title }}')">
+                                <i class="fas fa-trash"></i>
+                                <span>Delete Page</span>
+                            </button>
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>
@@ -361,40 +488,395 @@
 
 @section('styles')
 <style>
+/* Page Header */
 .admin-page-title {
     color: #2596be;
     font-weight: 700;
-    font-size: 2rem;
+    font-size: 1.75rem;
+}
+
+.breadcrumb {
+    background: transparent;
+    padding: 0;
     margin: 0;
+    font-size: 0.9rem;
 }
 
-.admin-page-subtitle {
+.breadcrumb-item a {
     color: #6c757d;
-    font-size: 1rem;
 }
 
-.section-preview {
-    padding: 15px;
-    border-left: 4px solid #e9ecef;
+/* Cards */
+.card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.card-header.bg-gradient-primary {
+    background: linear-gradient(135deg, #2596be 0%, #4b95c4 100%);
+    border: none;
+}
+
+.card-header.bg-gradient-info {
+    background: linear-gradient(135deg, #17a2b8 0%, #20c997 100%);
+    border: none;
+}
+
+.card-header.bg-gradient-success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    border: none;
+}
+
+.card-header.bg-gradient-warning {
+    background: linear-gradient(135deg, #f3d40a 0%, #ffc107 100%);
+    border: none;
+}
+
+/* Section Preview Cards */
+.section-preview-card {
+    background: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.section-header {
     background: #f8f9fa;
-    border-radius: 5px;
+    padding: 15px 20px;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: between;
 }
 
-.page-content-preview {
-    background: white;
+.section-content {
     padding: 20px;
-    border: 1px solid #dee2e6;
+}
+
+.section-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6c757d;
+}
+
+.section-empty i {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    opacity: 0.5;
+}
+
+/* Slide Cards */
+.slide-card {
+    background: #fff;
+    border: 2px solid #2596be;
+    border-radius: 8px;
+    overflow: hidden;
+    height: 100%;
+}
+
+.slide-header {
+    background: #2596be;
+    color: white;
+    padding: 8px 15px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.slide-content {
+    padding: 15px;
+}
+
+.slide-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.slide-subtitle {
+    font-size: 0.85rem;
+    color: #6c757d;
+    line-height: 1.4;
+    margin-bottom: 10px;
+}
+
+.btn-preview {
+    display: inline-block;
+    background: #2596be;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* Mission Cards */
+.mission-card {
+    background: #fff;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    height: 100%;
+    transition: all 0.3s ease;
+}
+
+.mission-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.vision-card {
+    border-color: #17a2b8;
+}
+
+.mission-card-main {
+    border-color: #28a745;
+}
+
+.objectives-card {
+    border-color: #6f42c1;
+}
+
+.mission-icon {
+    font-size: 2rem;
+    margin-bottom: 15px;
+}
+
+.vision-card .mission-icon {
+    color: #17a2b8;
+}
+
+.mission-card-main .mission-icon {
+    color: #28a745;
+}
+
+.objectives-card .mission-icon {
+    color: #6f42c1;
+}
+
+.mission-title {
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.mission-text {
+    font-size: 0.9rem;
+    color: #6c757d;
+    line-height: 1.5;
+}
+
+/* History Section */
+.history-preview {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid #17a2b8;
+}
+
+.history-text {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #495057;
+    margin-bottom: 10px;
+}
+
+.history-image {
+    font-size: 0.85rem;
+}
+
+/* Other Sections */
+.other-section-card {
+    background: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    height: 100%;
+}
+
+.section-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.section-icon.executives {
+    background: linear-gradient(135deg, #6f42c1, #8b5cf6);
+}
+
+.section-icon.cta {
+    background: linear-gradient(135deg, #f3d40a, #ffc107);
+}
+
+.section-icon.events {
+    background: linear-gradient(135deg, #e74c3c, #ff6b6b);
+}
+
+/* Info Grid */
+.info-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    justify-content: between;
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f3f4;
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    font-weight: 500;
+    color: #495057;
+    font-size: 0.9rem;
+    flex: 1;
+}
+
+.info-value {
+    text-align: right;
+    font-size: 0.85rem;
+}
+
+.url-display {
+    background: #e9ecef;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    color: #2596be;
+    font-weight: 600;
+}
+
+/* SEO Section */
+.seo-item {
+    border-left: 3px solid #28a745;
+    padding-left: 15px;
+}
+
+.seo-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #495057;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.seo-content {
+    font-size: 0.9rem;
+    color: #6c757d;
+    line-height: 1.5;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    background: none;
+    width: 100%;
+}
+
+.action-btn.primary {
+    background: linear-gradient(135deg, #2596be, #4b95c4);
+    color: white;
+}
+
+.action-btn.success {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+}
+
+.action-btn.danger {
+    background: linear-gradient(135deg, #dc3545, #e74c3c);
+    color: white;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    color: white;
+}
+
+.action-btn i {
+    font-size: 1.1rem;
+}
+
+/* Regular Page Content */
+.regular-page-preview {
+    background: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.content-preview {
+    padding: 30px;
+    font-family: Georgia, serif;
+    line-height: 1.8;
+}
+
+.content-preview h1,
+.content-preview h2,
+.content-preview h3 {
+    color: #2596be;
+    margin-bottom: 20px;
+}
+
+/* No Content Warning */
+.no-content-warning {
+    background: #fff3cd;
+    border: 1px solid #f3d40a;
     border-radius: 8px;
 }
 
-.page-content-preview h1,
-.page-content-preview h2,
-.page-content-preview h3 {
-    color: #2596be;
-}
+/* Responsive */
+@media (max-width: 768px) {
+    .admin-page-title {
+        font-size: 1.5rem;
+    }
 
-.badge {
-    font-size: 0.75rem;
+    .section-header {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+
+    .info-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .info-value {
+        text-align: left;
+    }
 }
 </style>
 @endsection
@@ -403,8 +885,12 @@
 @if($page->slug !== 'home')
 <script>
 function confirmDelete(pageId, pageTitle) {
-    document.getElementById('deleteForm').action = '{{ route("admin.pages.destroy", ":id") }}'.replace(':id', pageId);
+    // Set the form action with the correct route
+    const form = document.getElementById('deleteForm');
+    const route = '{{ route("admin.pages.destroy", ":id") }}';
+    form.action = route.replace(':id', pageId);
 
+    // Show the modal
     const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
     modal.show();
 }
