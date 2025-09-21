@@ -97,4 +97,30 @@ class EventController extends Controller
         return redirect()->route('admin.events.index')
             ->with('success', 'Event deleted successfully.');
     }
+
+    public function bulkDelete(Request $request)
+    {
+        $eventIds = $request->input('ids', []);
+
+        if (empty($eventIds)) {
+            return redirect()->route('admin.events.index')
+                ->with('error', 'No events selected for deletion.');
+        }
+
+        // Get events to delete their images
+        $events = Event::whereIn('id', $eventIds)->get();
+
+        foreach ($events as $event) {
+            if ($event->image) {
+                Storage::disk('public')->delete($event->image);
+            }
+        }
+
+        // Delete the events
+        Event::whereIn('id', $eventIds)->delete();
+
+        $count = count($eventIds);
+        return redirect()->route('admin.events.index')
+            ->with('success', "{$count} event(s) deleted successfully.");
+    }
 }

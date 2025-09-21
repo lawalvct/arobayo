@@ -1,0 +1,921 @@
+@extends('layouts.admin')@extends('layouts.admin')
+
+
+
+@section('title', 'Events Management')@section('title', 'Events Management - Egbe Arobayo Admin')
+
+
+
+@section('content')@section('content')
+
+<div class="container-fluid"><div class="container-fluid">
+
+    <!-- Page Header -->    <!-- Page Header -->
+
+    <div class="row mb-4">    <div class="row mb-4">
+
+        <div class="col-12">        <div class="col-12">
+
+            <div class="d-flex justify-content-between align-items-center">            <div class="d-flex justify-content-between align-items-center">
+
+                <div>                <div>
+
+                    <h1 class="admin-page-title mb-2">                    <h2 class="admin-page-title mb-1">
+
+                        <i class="fas fa-calendar-alt me-3"></i>                        <i class="fas fa-calendar text-primary me-2"></i>
+
+                        Events Management                        Events Management
+
+                    </h1>                    </h2>
+
+                    <nav aria-label="breadcrumb">                    <nav aria-label="breadcrumb">
+
+                        <ol class="breadcrumb">                        <ol class="breadcrumb">
+
+                            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>                            <li class="breadcrumb-item">
+
+                            <li class="breadcrumb-item active" aria-current="page">Events</li>                                <a href="{{ route('admin.dashboard') }}" class="text-decoration-none">
+
+                        </ol>                                    <i class="fas fa-home me-1"></i>Dashboard
+
+                    </nav>                                </a>
+
+                </div>                            </li>
+
+                <a href="{{ route('admin.events.create') }}" class="btn btn-primary">                            <li class="breadcrumb-item active">Events</li>
+
+                    <i class="fas fa-plus me-2"></i>                        </ol>
+
+                    Create New Event                    </nav>
+
+                </a>                </div>
+
+            </div>                <div class="d-flex gap-2">
+
+        </div>                    <a href="{{ route('admin.events.create') }}" class="btn btn-primary">
+
+    </div>                        <i class="fas fa-plus me-1"></i>
+
+                        Create New Event
+
+    <!-- Statistics Cards -->                    </a>
+
+    <div class="row mb-4">                </div>
+
+        <div class="col-lg-3 col-md-6 mb-3">            </div>
+
+            <div class="card stats-card border-0 shadow-sm h-100">        </div>
+
+                <div class="card-body">    </div>
+
+                    <div class="d-flex align-items-center">
+
+                        <div class="stats-icon bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3">    @if(session('success'))
+
+                            <i class="fas fa-calendar-check"></i>        <div class="alert alert-success alert-dismissible fade show" role="alert">
+
+                        </div>            <i class="fas fa-check-circle me-2"></i>
+
+                        <div>            {{ session('success') }}
+
+                            <h5 class="stats-number mb-0">{{ $events->count() }}</h5>            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+
+                            <p class="stats-label text-muted mb-0">Total Events</p>        </div>
+
+                        </div>    @endif
+
+                    </div>
+
+                </div>    <!-- Events Stats -->
+
+            </div>    <div class="row mb-4">
+
+        </div>        <div class="col-xl-3 col-md-6">
+
+        <div class="col-lg-3 col-md-6 mb-3">            <div class="card stats-card border-0 shadow-sm">
+
+            <div class="card stats-card border-0 shadow-sm h-100">                <div class="card-body">
+
+                <div class="card-body">                    <div class="d-flex align-items-center">
+
+                    <div class="d-flex align-items-center">                        <div class="stats-icon bg-primary text-white me-3">
+
+                        <div class="stats-icon bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3">                            <i class="fas fa-calendar"></i>
+
+                            <i class="fas fa-eye"></i>                        </div>
+
+                        </div>                        <div>
+
+                        <div>                            <h5 class="stats-number mb-0">{{ $events->total() }}</h5>
+
+                            <h5 class="stats-number mb-0">{{ $events->where('is_active', true)->count() }}</h5>                            <p class="stats-label text-muted mb-0">Total Events</p>
+
+                            <p class="stats-label text-muted mb-0">Published</p>                        </div>
+
+                        </div>                    </div>
+
+                    </div>                </div>
+
+                </div>            </div>
+
+            </div>        </div>
+
+        </div>        <div class="col-xl-3 col-md-6">
+
+        <div class="col-lg-3 col-md-6 mb-3">            <div class="card stats-card border-0 shadow-sm">
+
+            <div class="card stats-card border-0 shadow-sm h-100">                <div class="card-body">
+
+                <div class="card-body">                    <div class="d-flex align-items-center">
+
+                    <div class="d-flex align-items-center">                        <div class="stats-icon bg-success text-white me-3">
+
+                        <div class="stats-icon bg-warning text-white rounded-circle d-flex align-items-center justify-content-center me-3">                            <i class="fas fa-eye"></i>
+
+                            <i class="fas fa-edit"></i>                        </div>
+
+                        </div>                        <div>
+
+                        <div>                            <h5 class="stats-number mb-0">{{ $events->where('is_active', true)->count() }}</h5>
+
+                            <h5 class="stats-number mb-0">{{ $events->where('is_active', false)->count() }}</h5>                            <p class="stats-label text-muted mb-0">Published</p>
+
+                            <p class="stats-label text-muted mb-0">Drafts</p>                        </div>
+
+                        </div>                    </div>
+
+                    </div>                </div>
+
+                </div>            </div>
+
+            </div>        </div>
+
+        </div>        <div class="col-xl-3 col-md-6">
+
+        <div class="col-lg-3 col-md-6 mb-3">            <div class="card stats-card border-0 shadow-sm">
+
+            <div class="card stats-card border-0 shadow-sm h-100">                <div class="card-body">
+
+                <div class="card-body">                    <div class="d-flex align-items-center">
+
+                    <div class="d-flex align-items-center">                        <div class="stats-icon bg-warning text-white me-3">
+
+                        <div class="stats-icon bg-info text-white rounded-circle d-flex align-items-center justify-content-center me-3">                            <i class="fas fa-star"></i>
+
+                            <i class="fas fa-clock"></i>                        </div>
+
+                        </div>                        <div>
+
+                        <div>                            <h5 class="stats-number mb-0">{{ $events->where('is_featured', true)->count() }}</h5>
+
+                            <h5 class="stats-number mb-0">{{ $events->where('event_date', '>=', now())->count() }}</h5>                            <p class="stats-label text-muted mb-0">Featured</p>
+
+                            <p class="stats-label text-muted mb-0">Upcoming</p>                        </div>
+
+                        </div>                    </div>
+
+                    </div>                </div>
+
+                </div>            </div>
+
+            </div>        </div>
+
+        </div>        <div class="col-xl-3 col-md-6">
+
+    </div>            <div class="card stats-card border-0 shadow-sm">
+
+                <div class="card-body">
+
+    <!-- Events Table -->                    <div class="d-flex align-items-center">
+
+    <div class="card shadow-sm border-0">                        <div class="stats-icon bg-info text-white me-3">
+
+        <div class="card-header bg-white">                            <i class="fas fa-clock"></i>
+
+            <div class="d-flex justify-content-between align-items-center">                        </div>
+
+                <h5 class="mb-0">                        <div>
+
+                    <i class="fas fa-list me-2"></i>                            <h5 class="stats-number mb-0">{{ $events->where('event_date', '>=', now())->count() }}</h5>
+
+                    All Events                            <p class="stats-label text-muted mb-0">Upcoming</p>
+
+                </h5>                        </div>
+
+                <div class="d-flex gap-2">                    </div>
+
+                    <!-- Filter buttons can be added here -->                </div>
+
+                </div>            </div>
+
+            </div>        </div>
+
+        </div>    </div>
+
+        <div class="card-body p-0">
+
+            @if($events->isNotEmpty())    <!-- Events Table -->
+
+                <div class="table-responsive">    <div class="card shadow-sm border-0">
+
+                    <table class="table table-hover mb-0">        <div class="card-header bg-white">
+
+                        <thead class="table-light">            <div class="d-flex justify-content-between align-items-center">
+
+                            <tr>                <h5 class="mb-0">
+
+                                <th scope="col" width="40">                    <i class="fas fa-list me-2"></i>
+
+                                    <input type="checkbox" class="form-check-input" id="selectAll">                    All Events
+
+                                </th>                </h5>
+
+                                <th scope="col">Event</th>                <div class="d-flex gap-2">
+
+                                <th scope="col" width="120">Date</th>                    <!-- Filter buttons can be added here -->
+
+                                <th scope="col" width="150">Location</th>                </div>
+
+                                <th scope="col" width="100" class="text-center">Status</th>            </div>
+
+                                <th scope="col" width="120" class="text-center">Actions</th>        </div>
+
+                            </tr>        <div class="card-body p-0">
+
+                        </thead>            @if($events->isNotEmpty())
+
+                        <tbody>                <div class="table-responsive">
+
+                            @foreach($events as $event)                    <table class="table table-hover mb-0">
+
+                            <tr class="event-row" data-event-id="{{ $event->id }}">                        <thead class="table-light">
+
+                                <td>                            <tr>
+
+                                    <input type="checkbox" class="form-check-input event-checkbox" value="{{ $event->id }}">                                <th scope="col" width="40">
+
+                                </td>                                    <input type="checkbox" class="form-check-input" id="selectAll">
+
+                                <td>                                </th>
+
+                                    <div class="d-flex align-items-center">                                <th scope="col">Event</th>
+
+                                        @if($event->image)                                <th scope="col" width="120">Date</th>
+
+                                            <img src="{{ asset('storage/' . $event->image) }}"                                <th scope="col" width="150">Location</th>
+
+                                                 alt="{{ $event->title }}"                                <th scope="col" width="100" class="text-center">Status</th>
+
+                                                 class="rounded me-3"                                <th scope="col" width="120" class="text-center">Actions</th>
+
+                                                 style="width: 50px; height: 50px; object-fit: cover;">                            </tr>
+
+                                        @else                        </thead>
+
+                                            <div class="bg-light rounded me-3 d-flex align-items-center justify-content-center"                        <tbody>
+
+                                                 style="width: 50px; height: 50px;">                            @foreach($events as $event)
+
+                                                <i class="fas fa-calendar text-muted"></i>                            <tr class="event-row" data-event-id="{{ $event->id }}">
+
+                                            </div>                                <td>
+
+                                        @endif                                    <input type="checkbox" class="form-check-input event-checkbox" value="{{ $event->id }}">
+
+                                        <div>                                </td>
+
+                                            <h6 class="mb-1">{{ $event->title }}</h6>                                <td>
+
+                                            <small class="text-muted">{{ Str::limit($event->description, 60) }}</small>                                    <div class="d-flex align-items-center">
+
+                                        </div>                                        @if($event->image)
+
+                                    </div>                                            <img src="{{ asset('storage/' . $event->image) }}"
+
+                                </td>                                                 alt="{{ $event->title }}"
+
+                                <td>                                                 class="rounded me-3"
+
+                                    <span class="fw-medium">                                                 style="width: 50px; height: 50px; object-fit: cover;">
+
+                                        {{ $event->event_date ? $event->event_date->format('M j, Y') : 'N/A' }}                                        @else
+
+                                    </span>                                            <div class="bg-light rounded me-3 d-flex align-items-center justify-content-center"
+
+                                    @if($event->event_time)                                                 style="width: 50px; height: 50px;">
+
+                                        <br><small class="text-muted">{{ $event->event_time }}</small>                                                <i class="fas fa-calendar text-muted"></i>
+
+                                    @endif                                            </div>
+
+                                </td>                                        @endif
+
+                                <td>                                        <div>
+
+                                    <span class="text-muted">{{ $event->location ?: 'TBD' }}</span>                                            <h6 class="mb-1">
+
+                                </td>                                                <a href="{{ route('admin.events.show', $event) }}"
+
+                                <td class="text-center">                                                   class="text-decoration-none text-dark fw-semibold">
+
+                                    @if($event->is_active)                                                    {{ $event->title }}
+
+                                        <span class="badge bg-success">Published</span>                                                </a>
+
+                                    @else                                            </h6>
+
+                                        <span class="badge bg-warning">Draft</span>                                            <small class="text-muted">
+
+                                    @endif                                                {{ Str::limit($event->description, 60) }}
+
+                                </td>                                            </small>
+
+                                <td>                                            <div class="mt-1">
+
+                                    <div class="d-flex justify-content-center gap-1">                                                @if($event->is_featured)
+
+                                        <a href="{{ route('admin.events.show', $event) }}"                                                    <span class="badge bg-warning me-1">Featured</span>
+
+                                           class="btn btn-sm btn-outline-info"                                                @endif
+
+                                           title="View Details">                                                @if($event->event_date->isFuture())
+
+                                            <i class="fas fa-eye"></i>                                                    <span class="badge bg-info">Upcoming</span>
+
+                                        </a>                                                @elseif($event->event_date->isToday())
+
+                                        <a href="{{ route('admin.events.edit', $event) }}"                                                    <span class="badge bg-success">Today</span>
+
+                                           class="btn btn-sm btn-outline-primary"                                                @else
+
+                                           title="Edit Event">                                                    <span class="badge bg-secondary">Past</span>
+
+                                            <i class="fas fa-edit"></i>                                                @endif
+
+                                        </a>                                            </div>
+
+                                        <button type="button"                                        </div>
+
+                                                class="btn btn-sm btn-outline-danger"                                    </div>
+
+                                                title="Delete Event"                                </td>
+
+                                                onclick="confirmDelete({{ $event->id }}, '{{ $event->title }}')">                                <td>
+
+                                            <i class="fas fa-trash"></i>                                    <div class="text-sm">
+
+                                        </button>                                        <strong>{{ $event->event_date->format('M j, Y') }}</strong><br>
+
+                                    </div>                                        <small class="text-muted">{{ $event->event_date->format('g:i A') }}</small>
+
+                                </td>                                    </div>
+
+                            </tr>                                </td>
+
+                            @endforeach                                <td>
+
+                        </tbody>                                    <span class="text-muted">
+
+                    </table>                                        @if($event->location)
+
+                </div>                                            <i class="fas fa-map-marker-alt me-1"></i>
+
+                                            {{ Str::limit($event->location, 20) }}
+
+                <!-- Pagination -->                                        @else
+
+                <div class="card-footer bg-white">                                            <i class="fas fa-question-circle me-1"></i>
+
+                    <div class="d-flex justify-content-between align-items-center">                                            No location
+
+                        <div class="text-muted">                                        @endif
+
+                            Showing {{ $events->firstItem() }} to {{ $events->lastItem() }} of {{ $events->total() }} events                                    </span>
+
+                        </div>                                </td>
+
+                        {{ $events->links() }}                                <td class="text-center">
+
+                    </div>                                    @if($event->is_active)
+
+                </div>                                        <span class="badge bg-success">Published</span>
+
+            @else                                    @else
+
+                <div class="text-center py-5">                                        <span class="badge bg-warning">Draft</span>
+
+                    <i class="fas fa-calendar fa-4x text-muted mb-3"></i>                                    @endif
+
+                    <h5 class="text-muted">No Events Found</h5>                                </td>
+
+                    <p class="text-muted mb-4">Start by creating your first event to engage your community.</p>                                <td>
+
+                    <a href="{{ route('admin.events.create') }}" class="btn btn-primary">                                    <div class="d-flex justify-content-center gap-1">
+
+                        <i class="fas fa-plus me-2"></i>                                        <a href="{{ route('admin.events.show', $event) }}"
+
+                        Create Your First Event                                           class="btn btn-sm btn-outline-info"
+
+                    </a>                                           title="View Details">
+
+                </div>                                            <i class="fas fa-eye"></i>
+
+            @endif                                        </a>
+
+        </div>                                        <a href="{{ route('admin.events.edit', $event) }}"
+
+    </div>                                           class="btn btn-sm btn-outline-primary"
+
+</div>                                           title="Edit Event">
+
+                                            <i class="fas fa-edit"></i>
+
+<!-- Delete Confirmation Modal -->                                        </a>
+
+<div class="modal fade" id="deleteModal" tabindex="-1">                                        <button type="button"
+
+    <div class="modal-dialog">                                                class="btn btn-sm btn-outline-danger"
+
+        <div class="modal-content">                                                title="Delete Event"
+
+            <div class="modal-header">                                                onclick="confirmDelete({{ $event->id }}, '{{ $event->title }}')">
+
+                <h5 class="modal-title">Confirm Delete</h5>                                            <i class="fas fa-trash"></i>
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>                                        </button>
+
+            </div>                                    </div>
+
+            <div class="modal-body">                                </td>
+
+                <p>Are you sure you want to delete this event?</p>                            </tr>
+
+                <p><strong id="eventTitle"></strong></p>                            @endforeach
+
+                <p class="text-danger"><i class="fas fa-exclamation-triangle me-2"></i>This action cannot be undone.</p>                        </tbody>
+
+            </div>                    </table>
+
+            <div class="modal-footer">                </div>
+
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+
+                <form id="deleteForm" method="POST" class="d-inline">                <!-- Pagination -->
+
+                    @csrf                <div class="card-footer bg-white">
+
+                    @method('DELETE')                    <div class="d-flex justify-content-between align-items-center">
+
+                    <button type="submit" class="btn btn-danger">Delete Event</button>                        <div class="text-muted">
+
+                </form>                            Showing {{ $events->firstItem() }} to {{ $events->lastItem() }} of {{ $events->total() }} events
+
+            </div>                        </div>
+
+        </div>                        {{ $events->links() }}
+
+    </div>                    </div>
+
+</div>                </div>
+
+@endsection            @else
+
+                <div class="text-center py-5">
+
+@section('styles')                    <i class="fas fa-calendar fa-4x text-muted mb-3"></i>
+
+<style>                    <h5 class="text-muted">No Events Found</h5>
+
+/* Page Header */                    <p class="text-muted mb-4">Start by creating your first event to engage your community.</p>
+
+.admin-page-title {                    <a href="{{ route('admin.events.create') }}" class="btn btn-primary">
+
+    color: #2596be;                        <i class="fas fa-plus me-2"></i>
+
+    font-weight: 700;                        Create Your First Event
+
+    font-size: 1.75rem;                    </a>
+
+}                </div>
+
+            @endif
+
+.breadcrumb {        </div>
+
+    background: transparent;    </div>
+
+    padding: 0;</div>
+
+    margin: 0;
+
+    font-size: 0.9rem;<!-- Delete Confirmation Modal -->
+
+}<div class="modal fade" id="deleteModal" tabindex="-1">
+
+    <div class="modal-dialog">
+
+.breadcrumb-item a {        <div class="modal-content">
+
+    color: #6c757d;            <div class="modal-header">
+
+    text-decoration: none;                <h5 class="modal-title">Confirm Delete</h5>
+
+}                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+
+            </div>
+
+.breadcrumb-item a:hover {            <div class="modal-body">
+
+    color: #2596be;                <p>Are you sure you want to delete this event?</p>
+
+}                <p><strong id="eventTitle"></strong></p>
+
+                <p class="text-danger"><i class="fas fa-exclamation-triangle me-2"></i>This action cannot be undone.</p>
+
+/* Statistics Cards */            </div>
+
+.stats-card {            <div class="modal-footer">
+
+    transition: transform 0.2s ease;                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+
+}                <form id="deleteForm" method="POST" class="d-inline">
+
+                    @csrf
+
+.stats-card:hover {                    @method('DELETE')
+
+    transform: translateY(-2px);                    <button type="submit" class="btn btn-danger">Delete Event</button>
+
+}                </form>
+
+            </div>
+
+.stats-icon {        </div>
+
+    width: 50px;    </div>
+
+    height: 50px;</div>
+
+    font-size: 1.2rem;@endsection
+
+}
+
+@section('styles')
+
+.stats-number {<style>
+
+    font-size: 1.8rem;/* Page Header */
+
+    font-weight: 700;.admin-page-title {
+
+    color: #2596be;    color: #2596be;
+
+}    font-weight: 700;
+
+    font-size: 1.75rem;
+
+.stats-label {}
+
+    font-size: 0.85rem;
+
+    font-weight: 500;.breadcrumb {
+
+}    background: transparent;
+
+    padding: 0;
+
+/* Table Enhancements */    margin: 0;
+
+.table th {    font-size: 0.9rem;
+
+    border-top: none;}
+
+    font-weight: 600;
+
+    color: #495057;.breadcrumb-item a {
+
+    font-size: 0.9rem;    color: #6c757d;
+
+}}
+
+
+
+.event-row:hover {/* Stats Cards */
+
+    background-color: #f8f9fa;.stats-card {
+
+}    border-radius: 12px;
+
+    transition: transform 0.3s ease;
+
+.btn-group-sm > .btn, .btn-sm {}
+
+    padding: 0.25rem 0.5rem;
+
+    font-size: 0.875rem;.stats-card:hover {
+
+}    transform: translateY(-2px);
+
+}
+
+/* Action Buttons */
+
+.btn-outline-info:hover {.stats-icon {
+
+    background-color: #17a2b8;    width: 50px;
+
+    border-color: #17a2b8;    height: 50px;
+
+}    border-radius: 10px;
+
+    display: flex;
+
+.btn-outline-primary:hover {    align-items: center;
+
+    background-color: #007bff;    justify-content: center;
+
+    border-color: #007bff;    font-size: 1.25rem;
+
+}}
+
+
+
+.btn-outline-danger:hover {.stats-number {
+
+    background-color: #dc3545;    font-size: 1.75rem;
+
+    border-color: #dc3545;    font-weight: 700;
+
+}    color: #2c3e50;
+
+}
+
+/* Empty State */
+
+.empty-state {.stats-label {
+
+    padding: 3rem 1rem;    font-size: 0.875rem;
+
+}    font-weight: 500;
+
+}
+
+/* Modal Enhancements */
+
+.modal-header {/* Table Enhancements */
+
+    border-bottom: 1px solid #dee2e6;.table th {
+
+    background-color: #f8f9fa;    font-weight: 600;
+
+}    color: #495057;
+
+    border-bottom: 2px solid #e9ecef;
+
+.modal-footer {}
+
+    border-top: 1px solid #dee2e6;
+
+    background-color: #f8f9fa;.event-row {
+
+}    transition: background-color 0.2s ease;
+
+}
+
+/* Responsive Adjustments */
+
+@media (max-width: 768px) {.event-row:hover {
+
+    .admin-page-title {    background-color: #f8f9fa;
+
+        font-size: 1.5rem;}
+
+    }
+
+    /* Cards */
+
+    .stats-number {.card {
+
+        font-size: 1.5rem;    border: none;
+
+    }    border-radius: 12px;
+
+        box-shadow: 0 0 20px rgba(0,0,0,0.05);
+
+    .btn-group-sm .btn {}
+
+        padding: 0.2rem 0.4rem;
+
+    }/* Responsive Design */
+
+}@media (max-width: 768px) {
+
+</style>    .admin-page-title {
+
+@endsection        font-size: 1.5rem;
+
+    }
+
+@section('scripts')
+
+<script>    .stats-card {
+
+document.addEventListener('DOMContentLoaded', function() {        margin-bottom: 1rem;
+
+    // Select All functionality    }
+
+    const selectAllCheckbox = document.getElementById('selectAll');
+
+    const eventCheckboxes = document.querySelectorAll('.event-checkbox');    .table-responsive {
+
+            font-size: 0.875rem;
+
+    if (selectAllCheckbox) {    }
+
+        selectAllCheckbox.addEventListener('change', function() {}
+
+            eventCheckboxes.forEach(checkbox => {</style>
+
+                checkbox.checked = this.checked;@endsection
+
+            });
+
+        });@section('scripts')
+
+    }<script>
+
+    let currentEventId = null;
+
+    // Individual checkbox handling
+
+    eventCheckboxes.forEach(checkbox => {function confirmDelete(eventId, eventTitle) {
+
+        checkbox.addEventListener('change', function() {    currentEventId = eventId;
+
+            const allChecked = Array.from(eventCheckboxes).every(cb => cb.checked);    document.getElementById('eventTitle').textContent = eventTitle;
+
+            const someChecked = Array.from(eventCheckboxes).some(cb => cb.checked);    document.getElementById('deleteForm').action = `/admin/events/${eventId}`;
+
+
+
+            if (selectAllCheckbox) {    const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+
+                selectAllCheckbox.checked = allChecked;    modal.show();
+
+                selectAllCheckbox.indeterminate = someChecked && !allChecked;}
+
+            }
+
+        });// Select all functionality
+
+    });document.addEventListener('DOMContentLoaded', function() {
+
+});    const selectAllCheckbox = document.getElementById('selectAll');
+
+    const eventCheckboxes = document.querySelectorAll('.event-checkbox');
+
+// Delete confirmation function
+
+function confirmDelete(eventId, eventTitle) {    if (selectAllCheckbox) {
+
+    const modal = new bootstrap.Modal(document.getElementById('deleteModal'));        selectAllCheckbox.addEventListener('change', function() {
+
+    const deleteForm = document.getElementById('deleteForm');            eventCheckboxes.forEach(checkbox => {
+
+    const eventTitleElement = document.getElementById('eventTitle');                checkbox.checked = this.checked;
+
+                });
+
+    // Set the event title in the modal        });
+
+    eventTitleElement.textContent = eventTitle;    }
+
+
+
+    // Set the form action    // Update select all when individual checkboxes change
+
+    deleteForm.action = `/admin/events/${eventId}`;    eventCheckboxes.forEach(checkbox => {
+
+            checkbox.addEventListener('change', function() {
+
+    // Show the modal            const allChecked = Array.from(eventCheckboxes).every(cb => cb.checked);
+
+    modal.show();            const noneChecked = Array.from(eventCheckboxes).every(cb => !cb.checked);
+
+}
+
+            if (selectAllCheckbox) {
+
+// Success/Error message auto-hide                selectAllCheckbox.checked = allChecked;
+
+setTimeout(function() {                selectAllCheckbox.indeterminate = !allChecked && !noneChecked;
+
+    const alerts = document.querySelectorAll('.alert');            }
+
+    alerts.forEach(alert => {        });
+
+        if (alert.classList.contains('alert-success') || alert.classList.contains('alert-info')) {    });
+
+            alert.style.transition = 'opacity 0.5s';});
+
+            alert.style.opacity = '0';</script>
+
+            setTimeout(() => alert.remove(), 500);@endsection
+
+        }                        <table class="table table-hover">
+
+    });                            <thead>
+
+}, 5000);                                <tr>
+
+</script>                                    <th>Title</th>
+
+@endsection                                    <th>Date</th>
+                                    <th>Location</th>
+                                    <th>Status</th>
+                                    <th>Featured</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($events as $event)
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            @if($event->image)
+                                                <img src="{{ asset('storage/' . $event->image) }}"
+                                                     alt="{{ $event->title }}"
+                                                     class="rounded me-2"
+                                                     style="width: 40px; height: 40px; object-fit: cover;">
+                                            @endif
+                                            <div>
+                                                <h6 class="mb-0">{{ Str::limit($event->title, 40) }}</h6>
+                                                <small class="text-muted">{{ Str::limit($event->description, 50) }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="text-nowrap">{{ $event->event_date->format('M d, Y') }}</span>
+                                        <br>
+                                        <small class="text-muted">{{ $event->event_date->format('g:i A') }}</small>
+                                    </td>
+                                    <td>{{ $event->location ?? 'N/A' }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ $event->is_active ? 'success' : 'secondary' }}">
+                                            {{ $event->is_active ? 'Active' : 'Inactive' }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        @if($event->is_featured)
+                                            <span class="badge bg-warning">Featured</span>
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <a href="{{ route('admin.events.show', $event) }}"
+                                               class="btn btn-outline-info">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="{{ route('admin.events.edit', $event) }}"
+                                               class="btn btn-outline-primary">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <button type="button"
+                                                    class="btn btn-outline-danger"
+                                                    onclick="confirmDelete({{ $event->id }})">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+
+                                        <form id="delete-form-{{ $event->id }}"
+                                              action="{{ route('admin.events.destroy', $event) }}"
+                                              method="POST"
+                                              style="display: none;">
+                                            @csrf
+                                            @method('DELETE')
+                                        </form>
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="6" class="text-center py-4">
+                                        <i class="fas fa-calendar fa-3x text-muted mb-3"></i>
+                                        <p class="text-muted">No events found</p>
+                                    </td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="d-flex justify-content-center mt-4">
+                {{ $events->links() }}
+            </div>
+        </main>
+    </div>
+</div>

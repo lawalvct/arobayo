@@ -32,11 +32,15 @@ Route::get('/events/{slug}', [EventController::class, 'show'])->name('events.sho
 Route::get('/gallery', [GalleryController::class, 'index'])->name('gallery.index');
 Route::get('/register', [RegistrationController::class, 'create'])->name('register');
 Route::post('/register', [RegistrationController::class, 'store'])->name('register.store');
+Route::get('/contact', function() {
+    return app(\App\Http\Controllers\HomeController::class)->page('contact');
+})->name('contact');
 
 // Admin Routes (protected by auth and admin middleware)
 Route::prefix('admin')->name('admin.')->middleware(['admin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('events', AdminEventController::class);
+    Route::post('/events/bulk-delete', [AdminEventController::class, 'bulkDelete'])->name('events.bulk-delete');
     Route::resource('pages', App\Http\Controllers\Admin\PageController::class);
     Route::post('pages/upload-image', [App\Http\Controllers\Admin\PageController::class, 'uploadImage'])->name('pages.upload-image');
 });
