@@ -248,7 +248,7 @@
                             </a>
                         </div>
                         <div class="col-lg-3 col-md-6 mb-3">
-                            <a href="#" class="quick-action-btn success">
+                            <a href="{{ route('admin.galleries.create') }}" class="quick-action-btn success">
                                 <i class="fas fa-image me-2"></i>
                                 Add Gallery
                             </a>
@@ -308,11 +308,11 @@
                         <div class="stat-card info">
                             <div class="d-flex align-items-center">
                                 <div class="stat-icon info">
-                                    <i class="fas fa-user-plus"></i>
+                                    <i class="fas fa-images"></i>
                                 </div>
                                 <div class="flex-grow-1">
-                                    <div class="stat-number">{{ $stats['total_registrations'] }}</div>
-                                    <div class="stat-label">Total Registrations</div>
+                                    <div class="stat-number">{{ $stats['total_galleries'] }}</div>
+                                    <div class="stat-label">Gallery Images</div>
                                 </div>
                             </div>
                         </div>
@@ -322,11 +322,11 @@
                         <div class="stat-card warning">
                             <div class="d-flex align-items-center">
                                 <div class="stat-icon warning">
-                                    <i class="fas fa-hourglass-half"></i>
+                                    <i class="fas fa-user-plus"></i>
                                 </div>
                                 <div class="flex-grow-1">
-                                    <div class="stat-number">{{ $stats['pending_registrations'] }}</div>
-                                    <div class="stat-label">Pending Registrations</div>
+                                    <div class="stat-number">{{ $stats['total_registrations'] }}</div>
+                                    <div class="stat-label">Total Registrations</div>
                                 </div>
                             </div>
                         </div>

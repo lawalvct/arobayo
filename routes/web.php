@@ -41,6 +41,9 @@ Route::prefix('admin')->name('admin.')->middleware(['admin'])->group(function ()
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('events', AdminEventController::class);
     Route::post('/events/bulk-delete', [AdminEventController::class, 'bulkDelete'])->name('events.bulk-delete');
+    Route::resource('galleries', App\Http\Controllers\Admin\GalleryController::class);
+    Route::post('/galleries/bulk-delete', [App\Http\Controllers\Admin\GalleryController::class, 'bulkDelete'])->name('galleries.bulk-delete');
+    Route::post('/galleries/bulk-toggle-status', [App\Http\Controllers\Admin\GalleryController::class, 'bulkToggleStatus'])->name('galleries.bulk-toggle-status');
     Route::resource('pages', App\Http\Controllers\Admin\PageController::class);
     Route::post('pages/upload-image', [App\Http\Controllers\Admin\PageController::class, 'uploadImage'])->name('pages.upload-image');
 });

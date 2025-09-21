@@ -411,7 +411,7 @@
                         <span class="notification-badge">{{ $stats['pending_events'] }}</span>
                     @endif
                 </a>
-                <a href="#" class="sidebar-nav-item">
+                <a href="{{ route('admin.galleries.index') }}" class="sidebar-nav-item {{ request()->routeIs('admin.galleries.*') ? 'active' : '' }}">
                     <i class="fas fa-images"></i>
                     Gallery
                 </a>
