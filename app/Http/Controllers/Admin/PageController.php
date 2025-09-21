@@ -313,11 +313,11 @@ class PageController extends Controller
     {
         $request->validate([
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'type' => 'required|string|in:hero,history,general,content'
+            'type' => 'nullable|string|in:hero,history,general,content'
         ]);
 
         $image = $request->file('image');
-        $type = $request->type;
+        $type = $request->type ?? 'general';
 
         // Generate unique filename
         $filename = time() . '_' . Str::random(10) . '.' . $image->getClientOriginalExtension();
