@@ -13,6 +13,63 @@
                     </div>
 
                     <div class="card-body p-5">
+                        <!-- Download Forms Section -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="bg-light rounded p-4 border">
+                                    <h5 class="text-primary fw-bold mb-3">
+                                        <i class="fas fa-download me-2"></i>
+                                        Download Required Forms
+                                    </h5>
+                                    <p class="text-muted mb-3">Please download and complete the following forms before registration:</p>
+
+                                    <div class="row g-3">
+                                        <div class="col-md-4">
+                                            <a href="{{ asset('forms/EGBE AROBAYO BLANK MEMBERSHIP FORM.pdf') }}"
+                                               class="btn btn-outline-primary w-100 d-flex align-items-center justify-content-center py-3"
+                                               target="_blank">
+                                                <div class="text-center">
+                                                    <i class="fas fa-file-pdf fa-2x mb-2"></i>
+                                                    <div class="fw-semibold">Membership Form</div>
+                                                    <small class="text-muted">Required</small>
+                                                </div>
+                                            </a>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <a href="{{ asset('forms/AKILE NEXT OF KIN FORM.pdf') }}"
+                                               class="btn btn-outline-success w-100 d-flex align-items-center justify-content-center py-3"
+                                               target="_blank">
+                                                <div class="text-center">
+                                                    <i class="fas fa-file-pdf fa-2x mb-2"></i>
+                                                    <div class="fw-semibold">Next of Kin Form</div>
+                                                    <small class="text-muted">Required</small>
+                                                </div>
+                                            </a>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <a href="{{ asset('forms/arobayo_cooop.pdf') }}"
+                                               class="btn btn-outline-info w-100 d-flex align-items-center justify-content-center py-3"
+                                               target="_blank">
+                                                <div class="text-center">
+                                                    <i class="fas fa-file-pdf fa-2x mb-2"></i>
+                                                    <div class="fw-semibold">COOP Form</div>
+                                                    <small class="text-muted">Optional</small>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <div class="alert alert-info mt-3 mb-0">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        <strong>Note:</strong> After completing the forms, please return them along with your registration.
+                                        You can submit them during our meetings or contact us for submission details.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         @if(session('success'))
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
                                 <i class="fas fa-check-circle me-2"></i>
