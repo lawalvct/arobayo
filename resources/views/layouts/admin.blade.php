@@ -438,7 +438,7 @@
 
             <div class="nav-section">
                 <div class="nav-section-title">System</div>
-                <a href="#" class="sidebar-nav-item">
+                <a href="{{ route('admin.navigations.index') }}" class="sidebar-nav-item {{ request()->routeIs('admin.navigations.*') ? 'active' : '' }}">
                     <i class="fas fa-bars"></i>
                     Navigation
                 </a>

@@ -50,6 +50,11 @@ Route::prefix('admin')->name('admin.')->middleware(['admin'])->group(function ()
     Route::resource('pages', App\Http\Controllers\Admin\PageController::class);
     Route::post('pages/upload-image', [App\Http\Controllers\Admin\PageController::class, 'uploadImage'])->name('pages.upload-image');
     Route::post('pages/{page}/save-draft', [App\Http\Controllers\Admin\PageController::class, 'saveDraft'])->name('pages.save-draft');
+    Route::resource('navigations', App\Http\Controllers\Admin\NavigationController::class);
+    Route::post('/navigations/update-order', [App\Http\Controllers\Admin\NavigationController::class, 'updateOrder'])->name('navigations.update-order');
+    Route::post('/navigations/{navigation}/toggle-status', [App\Http\Controllers\Admin\NavigationController::class, 'toggleStatus'])->name('navigations.toggle-status');
+    Route::delete('/navigations/bulk-delete', [App\Http\Controllers\Admin\NavigationController::class, 'bulkDelete'])->name('navigations.bulk-delete');
+    Route::post('/navigations/bulk-toggle-status', [App\Http\Controllers\Admin\NavigationController::class, 'bulkToggleStatus'])->name('navigations.bulk-toggle-status');
 
     // Registration management routes
     Route::resource('registrations', App\Http\Controllers\Admin\RegistrationController::class)->only(['index', 'show', 'update']);

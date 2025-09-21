@@ -12,6 +12,7 @@ class Navigation extends Model
     protected $fillable = [
         'label',
         'url',
+        'page_id',
         'parent_id',
         'sort_order',
         'is_active',
@@ -33,6 +34,11 @@ class Navigation extends Model
         return $this->hasMany(Navigation::class, 'parent_id')->orderBy('sort_order');
     }
 
+    public function page()
+    {
+        return $this->belongsTo(\App\Models\Page::class);
+    }
+
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
@@ -41,5 +47,17 @@ class Navigation extends Model
     public function scopeMainMenu($query)
     {
         return $query->whereNull('parent_id')->orderBy('sort_order');
+    }
+
+    /**
+     * Get the navigation URL - either from page or manual URL
+     */
+    public function getNavigationUrl()
+    {
+        if ($this->page_id && $this->page) {
+            return $this->page->slug === 'home' ? '/' : '/' . $this->page->slug;
+        }
+
+        return $this->url;
     }
 }

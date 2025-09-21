@@ -34,40 +34,44 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <div class="collapse navbar-collapse" id="navbarNav">
+                        <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('home') }}">Home</a>
                     </li>
-                    @if(isset($navigation))
+                    @if(isset($navigation) && $navigation->count() > 0)
                         @foreach($navigation as $nav)
-                            <li class="nav-item dropdown">
-                                <a class="nav-link @if($nav->children->isNotEmpty()) dropdown-toggle @endif"
-                                   href="{{ $nav->url }}"
-                                   @if($nav->children->isNotEmpty())
-                                       data-bs-toggle="dropdown"
-                                       role="button"
-                                       aria-expanded="false"
-                                   @endif
-                                   target="{{ $nav->target }}">
-                                    @if($nav->icon)
-                                        <i class="{{ $nav->icon }}"></i>
-                                    @endif
-                                    {{ $nav->label }}
-                                </a>
-                                @if($nav->children->isNotEmpty())
+                            <li class="nav-item {{ $nav->children->count() > 0 ? 'dropdown' : '' }}">
+                                @if($nav->children->count() > 0)
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                        @if($nav->icon)
+                                            <i class="{{ $nav->icon }} me-1"></i>
+                                        @endif
+                                        {{ $nav->label }}
+                                    </a>
                                     <ul class="dropdown-menu">
                                         @foreach($nav->children as $child)
                                             <li>
-                                                <a class="dropdown-item" href="{{ $child->url }}" target="{{ $child->target }}">
+                                                <a class="dropdown-item"
+                                                   href="{{ $child->url }}"
+                                                   target="{{ $child->target }}">
                                                     @if($child->icon)
-                                                        <i class="{{ $child->icon }}"></i>
+                                                        <i class="{{ $child->icon }} me-2"></i>
                                                     @endif
                                                     {{ $child->label }}
                                                 </a>
                                             </li>
                                         @endforeach
                                     </ul>
+                                @else
+                                    <a class="nav-link"
+                                       href="{{ $nav->url }}"
+                                       target="{{ $nav->target }}">
+                                        @if($nav->icon)
+                                            <i class="{{ $nav->icon }} me-1"></i>
+                                        @endif
+                                        {{ $nav->label }}
+                                    </a>
                                 @endif
                             </li>
                         @endforeach
@@ -85,21 +89,23 @@
                         @if(Auth::user()->isAdmin())
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('admin.dashboard') }}">
-                                    <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                                    <i class="fas fa-tachometer-alt me-1"></i>
+                                    Admin
                                 </a>
                             </li>
                         @endif
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-user-circle me-1"></i>{{ Auth::user()->name }}
+                                <i class="fas fa-user me-1"></i>
+                                {{ Auth::user()->name }}
                             </a>
                             <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Profile</a></li>
+                                <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form method="POST" action="{{ route('logout') }}" class="d-inline">
                                         @csrf
-                                        <button type="submit" class="dropdown-item">
-                                            <i class="fas fa-sign-out-alt me-2"></i>Logout
-                                        </button>
+                                        <button type="submit" class="dropdown-item">Logout</button>
                                     </form>
                                 </li>
                             </ul>
@@ -107,7 +113,8 @@
                     @else
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('login') }}">
-                                <i class="fas fa-sign-in-alt me-1"></i>Admin Login
+                                <i class="fas fa-sign-in-alt me-1"></i>
+                                Login
                             </a>
                         </li>
                     @endauth
