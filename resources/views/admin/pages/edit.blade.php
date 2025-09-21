@@ -65,8 +65,9 @@
 
                         <div class="mb-3">
                             <label for="content" class="form-label">Content *</label>
-                            <textarea class="form-control @error('content') is-invalid @enderror" 
-                                      id="content" name="content" rows="15" required>{{ old('content', $page->content) }}</textarea>
+                            <div id="editor" style="min-height: 300px; border: 1px solid #ced4da; border-radius: 0.375rem;"></div>
+                            <textarea class="form-control @error('content') is-invalid @enderror d-none" 
+                                      id="content" name="content" required>{{ old('content', $page->content) }}</textarea>
                             @error('content')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -176,8 +177,36 @@
 @endif
 @endsection
 
+@section('styles')
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+@endsection
+
 @section('scripts')
+<script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
 <script>
+// Initialize Quill editor
+const quill = new Quill('#editor', {
+    theme: 'snow',
+    modules: {
+        toolbar: [
+            [{ 'header': [1, 2, 3, false] }],
+            ['bold', 'italic', 'underline'],
+            ['link', 'image'],
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+            [{ 'align': [] }],
+            ['clean']
+        ]
+    }
+});
+
+// Set initial content
+quill.root.innerHTML = document.getElementById('content').value;
+
+// Update hidden textarea on content change
+quill.on('text-change', function() {
+    document.getElementById('content').value = quill.root.innerHTML;
+});
+
 // Auto-generate slug from title
 document.getElementById('title').addEventListener('input', function() {
     if ('{{ $page->slug }}' !== 'home') {
