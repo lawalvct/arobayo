@@ -59,7 +59,7 @@ class PageController extends Controller
                 // Ensure it's an array
                 if (is_array($homeContent)) {
                     $data['homeContent'] = $homeContent;
-                    
+
                     // Add individual section enabled flags
                     $data['heroEnabled'] = $homeContent['hero']['enabled'] ?? true;
                     $data['missionEnabled'] = $homeContent['mission']['enabled'] ?? true;
@@ -312,8 +312,8 @@ class PageController extends Controller
     public function uploadImage(Request $request)
     {
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'type' => 'required|string|in:hero,history,general'
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'type' => 'required|string|in:hero,history,general,content'
         ]);
 
         $image = $request->file('image');
@@ -329,7 +329,39 @@ class PageController extends Controller
         return response()->json([
             'success' => true,
             'path' => "/storage/{$path}",
-            'filename' => $filename
+            'filename' => $filename,
+            'url' => asset("storage/{$path}")
+        ]);
+    }
+
+    /**
+     * Save page as draft (AJAX endpoint)
+     */
+    public function saveDraft(Request $request, Page $page)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+            'slug' => 'required|string|max:255|unique:pages,slug,' . $page->id,
+            'meta_title' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string|max:500',
+        ]);
+
+        // Update page as draft (is_active = false)
+        $page->update([
+            'title' => $request->title,
+            'content' => $request->content,
+            'slug' => $request->slug,
+            'meta_title' => $request->meta_title,
+            'meta_description' => $request->meta_description,
+            'is_active' => false, // Always save as draft
+            'updated_at' => now()
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Draft saved successfully',
+            'last_saved' => $page->updated_at->format('g:i A')
         ]);
     }
 }

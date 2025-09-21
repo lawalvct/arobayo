@@ -49,6 +49,7 @@ Route::prefix('admin')->name('admin.')->middleware(['admin'])->group(function ()
     Route::post('/executives/bulk-toggle-status', [App\Http\Controllers\Admin\ExecutiveController::class, 'bulkToggleStatus'])->name('executives.bulk-toggle-status');
     Route::resource('pages', App\Http\Controllers\Admin\PageController::class);
     Route::post('pages/upload-image', [App\Http\Controllers\Admin\PageController::class, 'uploadImage'])->name('pages.upload-image');
+    Route::post('pages/{page}/save-draft', [App\Http\Controllers\Admin\PageController::class, 'saveDraft'])->name('pages.save-draft');
 
     // Registration management routes
     Route::resource('registrations', App\Http\Controllers\Admin\RegistrationController::class)->only(['index', 'show', 'update']);
