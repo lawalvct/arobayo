@@ -44,6 +44,9 @@ Route::prefix('admin')->name('admin.')->middleware(['admin'])->group(function ()
     Route::resource('galleries', App\Http\Controllers\Admin\GalleryController::class);
     Route::post('/galleries/bulk-delete', [App\Http\Controllers\Admin\GalleryController::class, 'bulkDelete'])->name('galleries.bulk-delete');
     Route::post('/galleries/bulk-toggle-status', [App\Http\Controllers\Admin\GalleryController::class, 'bulkToggleStatus'])->name('galleries.bulk-toggle-status');
+    Route::resource('executives', App\Http\Controllers\Admin\ExecutiveController::class);
+    Route::post('/executives/bulk-delete', [App\Http\Controllers\Admin\ExecutiveController::class, 'bulkDelete'])->name('executives.bulk-delete');
+    Route::post('/executives/bulk-toggle-status', [App\Http\Controllers\Admin\ExecutiveController::class, 'bulkToggleStatus'])->name('executives.bulk-toggle-status');
     Route::resource('pages', App\Http\Controllers\Admin\PageController::class);
     Route::post('pages/upload-image', [App\Http\Controllers\Admin\PageController::class, 'uploadImage'])->name('pages.upload-image');
 });

@@ -415,7 +415,7 @@
                     <i class="fas fa-images"></i>
                     Gallery
                 </a>
-                <a href="#" class="sidebar-nav-item">
+                <a href="{{ route('admin.executives.index') }}" class="sidebar-nav-item {{ request()->routeIs('admin.executives.*') ? 'active' : '' }}">
                     <i class="fas fa-users"></i>
                     Executives
                 </a>
