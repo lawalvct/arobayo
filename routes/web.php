@@ -49,6 +49,12 @@ Route::prefix('admin')->name('admin.')->middleware(['admin'])->group(function ()
     Route::post('/executives/bulk-toggle-status', [App\Http\Controllers\Admin\ExecutiveController::class, 'bulkToggleStatus'])->name('executives.bulk-toggle-status');
     Route::resource('pages', App\Http\Controllers\Admin\PageController::class);
     Route::post('pages/upload-image', [App\Http\Controllers\Admin\PageController::class, 'uploadImage'])->name('pages.upload-image');
+
+    // Registration management routes
+    Route::resource('registrations', App\Http\Controllers\Admin\RegistrationController::class)->only(['index', 'show', 'update']);
+    Route::post('/registrations/bulk-update', [App\Http\Controllers\Admin\RegistrationController::class, 'bulkUpdate'])->name('registrations.bulk-update');
+    Route::get('/registrations/documents/{document}/download', [App\Http\Controllers\Admin\RegistrationController::class, 'downloadDocument'])->name('registrations.documents.download');
+    Route::post('/registrations/documents/{document}/status', [App\Http\Controllers\Admin\RegistrationController::class, 'updateDocumentStatus'])->name('registrations.documents.update-status');
 });
 
 // Dynamic Pages (must be last)
