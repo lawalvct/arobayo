@@ -3,54 +3,38 @@
 @section('title', 'Navigation Management - Egbe Arobayo')
 
 @section('content')
-<div class="container-fluid px-4">
-    <div class="d-flex justify-content-between align-items-center mb-5">
-        <div>
-            <h2 class="admin-page-title">
-                <i class="fas fa-bars me-3"></i>
-                Navigation Management
-            </h2>
-            <p class="admin-page-subtitle mb-0">
-                Manage website navigation menu items
-            </p>
-        </div>
-        <div class="btn-toolbar gap-2" role="toolbar">
-            <div class="btn-group" role="group">
-                <a href="{{ route('admin.navigations.create') }}" class="btn admin-btn-primary">
-                    <i class="fas fa-plus me-2"></i>
-                    Add Navigation Item
-                </a>
-            </div>
-            <div class="btn-group" role="group">
-                <button type="button" class="btn btn-outline-danger" id="bulkDeleteBtn" disabled>
-                    <i class="fas fa-trash me-2"></i>
-                    Delete Selected
-                </button>
-                <button type="button" class="btn btn-outline-success" id="bulkActivateBtn" disabled>
-                    <i class="fas fa-check me-2"></i>
-                    Activate Selected
-                </button>
-                <button type="button" class="btn btn-outline-warning" id="bulkDeactivateBtn" disabled>
-                    <i class="fas fa-times me-2"></i>
-                    Deactivate Selected
-                </button>
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="admin-page-title mb-2">
+                        <i class="fas fa-bars me-3"></i>
+                        Navigation Management
+                    </h1>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="{{ route('admin.dashboard') }}" class="text-decoration-none">
+                                    <i class="fas fa-home me-1"></i>Dashboard
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active">Navigation</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="{{ route('admin.navigations.create') }}" class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i>
+                        Add Navigation Item
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 
-    @if ($errors->any())
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="fas fa-exclamation-circle me-2"></i>
-            Please fix the following errors:
-            <ul class="mb-0 mt-2">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
-
+    <!-- Success Message -->
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             <i class="fas fa-check-circle me-2"></i>
@@ -67,42 +51,144 @@
         </div>
     @endif
 
+    @if ($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            Please fix the following errors:
+            <ul class="mb-0 mt-2">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
+    <!-- Navigation Stats -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="card stats-card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="stats-icon bg-primary text-white me-3">
+                            <i class="fas fa-bars"></i>
+                        </div>
+                        <div>
+                            <h5 class="stats-number mb-0">{{ $allNavigations->count() }}</h5>
+                            <p class="stats-label text-muted mb-0">Total Items</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card stats-card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="stats-icon bg-success text-white me-3">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <div>
+                            <h5 class="stats-number mb-0">{{ $allNavigations->where('is_active', true)->count() }}</h5>
+                            <p class="stats-label text-muted mb-0">Active Items</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card stats-card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="stats-icon bg-info text-white me-3">
+                            <i class="fas fa-sitemap"></i>
+                        </div>
+                        <div>
+                            <h5 class="stats-number mb-0">{{ $navigations->count() }}</h5>
+                            <p class="stats-label text-muted mb-0">Main Items</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card stats-card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="stats-icon bg-warning text-white me-3">
+                            <i class="fas fa-layer-group"></i>
+                        </div>
+                        <div>
+                            <h5 class="stats-number mb-0">{{ $allNavigations->whereNotNull('parent_id')->count() }}</h5>
+                            <p class="stats-label text-muted mb-0">Sub Items</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row g-4">
         <div class="col-lg-8">
             <!-- Navigation Structure -->
-            <div class="admin-card mb-4">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">
-                        <i class="fas fa-sitemap me-2"></i>
+                <!-- Main Content -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header border-0 bg-white">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h6 class="card-title mb-0">
+                        <i class="fas fa-sitemap me-2 text-primary"></i>
                         Navigation Structure
-                    </h5>
-                    <small class="text-white-50">Drag to reorder items</small>
+                    </h6>
                 </div>
-                <div class="card-body">
-                    @if($allNavigations->count() > 0)
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle me-2"></i>
-                            <strong>Tip:</strong> Drag and drop to reorder menu items. Items without a parent are main menu items.
-                        </div>
-
-                        <div id="navigation-tree" class="navigation-tree">
-                            @foreach($navigations as $navigation)
-                                @include('admin.navigations.partials.tree-item', ['navigation' => $navigation, 'level' => 0])
-                            @endforeach
-                        </div>
-                    @else
-                        <div class="text-center py-5">
-                            <i class="fas fa-bars fa-3x text-muted mb-3"></i>
-                            <h4 class="text-muted">No Navigation Items</h4>
-                            <p class="text-muted mb-4">Create your first navigation item to get started.</p>
-                            <a href="{{ route('admin.navigations.create') }}" class="btn admin-btn-primary">
-                                <i class="fas fa-plus me-2"></i>
-                                Create Navigation Item
-                            </a>
-                        </div>
-                    @endif
+                <div class="col-auto">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-outline-primary btn-sm" id="expandAll">
+                            <i class="fas fa-expand me-1"></i>Expand All
+                        </button>
+                        <button type="button" class="btn btn-outline-primary btn-sm" id="collapseAll">
+                            <i class="fas fa-compress me-1"></i>Collapse All
+                        </button>
+                    </div>
                 </div>
             </div>
+        </div>
+        <div class="card-body p-0">
+            @if($navigations->isNotEmpty())
+                <div class="table-responsive">
+                    <div id="navigation-tree" class="navigation-tree p-3">
+                        @foreach($navigations as $navigation)
+                            @include('admin.navigations.partials.tree-item', ['navigation' => $navigation])
+                        @endforeach
+                    </div>
+                </div>
+            @else
+                <div class="empty-state text-center py-5">
+                    <div class="empty-state-icon mb-3">
+                        <i class="fas fa-sitemap text-muted" style="font-size: 4rem; opacity: 0.3;"></i>
+                    </div>
+                    <h5 class="text-muted mb-2">No Navigation Items</h5>
+                    <p class="text-muted mb-4">Create your first navigation item to get started with organizing your site structure.</p>
+                    <a href="{{ route('admin.navigations.create') }}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Create First Navigation Item
+                    </a>
+                </div>
+            @endif
+        </div>
+    </div>
+
+    <!-- Bulk Actions -->
+    <form id="bulkDeleteForm" action="{{ route('admin.navigations.bulk-delete') }}" method="POST" style="display: none;">
+        @csrf
+        @method('DELETE')
+        <input type="hidden" name="ids" id="bulkDeleteIds">
+    </form>
+
+    <form id="bulkStatusForm" action="{{ route('admin.navigations.bulk-toggle-status') }}" method="POST" style="display: none;">
+        @csrf
+        <input type="hidden" name="ids" id="bulkStatusIds">
+        <input type="hidden" name="status" id="bulkStatusValue">
+    </form>
         </div>
 
         <div class="col-lg-4">
@@ -178,17 +264,84 @@
 </div>
 
 <!-- Bulk Action Forms -->
-<form id="bulkDeleteForm" action="{{ route('admin.navigations.bulk-delete') }}" method="POST" style="display: none;">
-    @csrf
-    @method('DELETE')
-    <input type="hidden" name="ids" id="bulkDeleteIds">
-</form>
+    <!-- Bulk Actions -->
+    <form id="bulkDeleteForm" action="{{ route('admin.navigations.bulk-delete') }}" method="POST" style="display: none;">
+        @csrf
+        @method('DELETE')
+        <input type="hidden" name="ids" id="bulkDeleteIds">
+    </form>
 
-<form id="bulkStatusForm" action="{{ route('admin.navigations.bulk-toggle-status') }}" method="POST" style="display: none;">
-    @csrf
-    <input type="hidden" name="ids" id="bulkStatusIds">
-    <input type="hidden" name="status" id="bulkStatusValue">
-</form>
+    <form id="bulkStatusForm" action="{{ route('admin.navigations.bulk-toggle-status') }}" method="POST" style="display: none;">
+        @csrf
+        <input type="hidden" name="ids" id="bulkStatusIds">
+        <input type="hidden" name="status" id="bulkStatusValue">
+    </form>
+</div>
+
+<style>
+.stats-card {
+    transition: transform 0.2s ease-in-out;
+}
+
+.stats-card:hover {
+    transform: translateY(-2px);
+}
+
+.stats-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.stats-number {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.stats-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.empty-state {
+    padding: 3rem 2rem;
+}
+
+.empty-state-icon {
+    margin-bottom: 1.5rem;
+}
+
+.navigation-tree {
+    margin: 0;
+    padding: 0;
+}
+
+.card {
+    border: none !important;
+    box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.075) !important;
+}
+
+.card-header {
+    background: white !important;
+    border-bottom: 1px solid #e3e6f0 !important;
+    padding: 1.25rem 1.5rem !important;
+}
+
+.card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.btn-group .btn {
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+}
 @endsection
 
 @section('styles')
@@ -255,11 +408,20 @@
 .tree-drag-handle {
     color: #6c757d;
     margin-right: 1rem;
-    cursor: move;
+    cursor: grab;
+    font-size: 1rem;
+    padding: 0.25rem;
+    border-radius: 0.25rem;
+    transition: all 0.2s ease;
 }
 
 .tree-drag-handle:hover {
     color: #4e73df;
+    background-color: #f8f9fc;
+}
+
+.tree-drag-handle:active {
+    cursor: grabbing;
 }
 
 .tree-info {
@@ -349,21 +511,70 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Check if Sortable is loaded
+    if (typeof Sortable === 'undefined') {
+        console.error('Sortable.js is not loaded!');
+        return;
+    }
+    console.log('Sortable.js version:', Sortable.version || 'unknown');
+
     initializeSortable();
     initializeBulkActions();
 });
 
 function initializeSortable() {
     const treeContainer = document.getElementById('navigation-tree');
-    if (!treeContainer) return;
+    if (!treeContainer) {
+        console.log('Navigation tree container not found');
+        return;
+    }
 
+    console.log('Initializing Sortable for navigation tree');
+
+    // Only make direct children of navigation-tree sortable (top-level items)
     new Sortable(treeContainer, {
         animation: 150,
+        handle: '.tree-drag-handle', // Only allow dragging by the drag handle
         ghostClass: 'dragging',
         chosenClass: 'drag-over',
+        dragClass: 'sortable-drag',
+        filter: '.tree-children', // Exclude nested children from direct sorting
+        preventOnFilter: false,
+        onStart: function(evt) {
+            console.log('Drag started', evt.item);
+            evt.item.classList.add('dragging');
+        },
         onEnd: function(evt) {
+            console.log('Drag ended', evt.item);
+            evt.item.classList.remove('dragging');
             updateNavigationOrder();
+        },
+        onMove: function(evt) {
+            console.log('Item moved', evt);
+            // Prevent dropping into nested areas
+            if (evt.related.classList.contains('tree-children')) {
+                return false;
+            }
         }
+    });
+
+    // Test if drag handles exist
+    const dragHandles = document.querySelectorAll('.tree-drag-handle');
+    console.log('Found drag handles:', dragHandles.length);
+
+    // Also initialize nested children containers
+    const nestedContainers = document.querySelectorAll('.tree-children');
+    nestedContainers.forEach(container => {
+        new Sortable(container, {
+            group: 'nested',
+            animation: 150,
+            handle: '.tree-drag-handle',
+            ghostClass: 'dragging',
+            chosenClass: 'drag-over',
+            onEnd: function(evt) {
+                updateNavigationOrder();
+            }
+        });
     });
 }
 
@@ -507,6 +718,20 @@ function collapseAll() {
         btn.innerHTML = '<i class="fas fa-plus"></i>';
     });
 }
+
+// Add event listeners for the new expand/collapse buttons
+document.addEventListener('DOMContentLoaded', function() {
+    const expandAllBtn = document.getElementById('expandAll');
+    const collapseAllBtn = document.getElementById('collapseAll');
+
+    if (expandAllBtn) {
+        expandAllBtn.addEventListener('click', expandAll);
+    }
+
+    if (collapseAllBtn) {
+        collapseAllBtn.addEventListener('click', collapseAll);
+    }
+});
 
 function showAlert(type, message) {
     const alertDiv = document.createElement('div');

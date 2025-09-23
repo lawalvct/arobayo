@@ -50,13 +50,13 @@ class NavigationController extends Controller
 
         Navigation::create([
             'label' => $request->label,
-            'url' => $request->url,
-            'page_id' => $request->page_id,
+            'url' => $request->url ?: null, // Ensure null instead of empty string
+            'page_id' => $request->page_id ?: null, // Ensure null instead of empty string
             'parent_id' => $request->parent_id,
             'sort_order' => $request->sort_order,
             'is_active' => $request->boolean('is_active', true),
             'target' => $request->target,
-            'icon' => $request->icon
+            'icon' => $request->icon ?: null // Ensure null instead of empty string
         ]);
 
         return redirect()->route('admin.navigations.index')
@@ -101,13 +101,13 @@ class NavigationController extends Controller
 
         $navigation->update([
             'label' => $request->label,
-            'url' => $request->url,
-            'page_id' => $request->page_id,
+            'url' => $request->url ?: null, // Ensure null instead of empty string
+            'page_id' => $request->page_id ?: null, // Ensure null instead of empty string
             'parent_id' => $request->parent_id,
             'sort_order' => $request->sort_order ?? $navigation->sort_order,
             'is_active' => $request->boolean('is_active'),
             'target' => $request->target,
-            'icon' => $request->icon
+            'icon' => $request->icon ?: null // Ensure null instead of empty string
         ]);
 
         return redirect()->route('admin.navigations.index')

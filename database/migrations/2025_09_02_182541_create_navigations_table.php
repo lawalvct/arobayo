@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('navigations', function (Blueprint $table) {
             $table->id();
             $table->string('label');
-            $table->string('url');
+            $table->string('url')->nullable(); // Make URL nullable since navigation can link to pages
+            $table->unsignedBigInteger('page_id')->nullable(); // Add page_id column
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->integer('sort_order')->default(0);
             $table->boolean('is_active')->default(true);
@@ -23,6 +24,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('parent_id')->references('id')->on('navigations')->onDelete('cascade');
+            $table->foreign('page_id')->references('id')->on('pages')->onDelete('cascade');
             $table->index(['parent_id', 'sort_order']);
         });
     }
