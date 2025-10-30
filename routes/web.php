@@ -36,32 +36,56 @@ Route::get('/contact', function() {
     return app(\App\Http\Controllers\HomeController::class)->page('contact');
 })->name('contact');
 
+  Route::get('/navigations-new/{{navigation}}/edit', function(){
+        dd('test');
+     });
+
 // Admin Routes (protected by auth and admin middleware)
 Route::prefix('admin')->name('admin.')->middleware(['admin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Events
     Route::resource('events', AdminEventController::class);
     Route::post('/events/bulk-delete', [AdminEventController::class, 'bulkDelete'])->name('events.bulk-delete');
+
+    // Galleries
     Route::resource('galleries', App\Http\Controllers\Admin\GalleryController::class);
     Route::post('/galleries/bulk-delete', [App\Http\Controllers\Admin\GalleryController::class, 'bulkDelete'])->name('galleries.bulk-delete');
     Route::post('/galleries/bulk-toggle-status', [App\Http\Controllers\Admin\GalleryController::class, 'bulkToggleStatus'])->name('galleries.bulk-toggle-status');
+
+    // Executives
     Route::resource('executives', App\Http\Controllers\Admin\ExecutiveController::class);
     Route::post('/executives/bulk-delete', [App\Http\Controllers\Admin\ExecutiveController::class, 'bulkDelete'])->name('executives.bulk-delete');
     Route::post('/executives/bulk-toggle-status', [App\Http\Controllers\Admin\ExecutiveController::class, 'bulkToggleStatus'])->name('executives.bulk-toggle-status');
+
+    // Pages
     Route::resource('pages', App\Http\Controllers\Admin\PageController::class);
     Route::post('pages/upload-image', [App\Http\Controllers\Admin\PageController::class, 'uploadImage'])->name('pages.upload-image');
     Route::post('pages/{page}/save-draft', [App\Http\Controllers\Admin\PageController::class, 'saveDraft'])->name('pages.save-draft');
+
+    // Navigation - Custom routes MUST come before resource routes
     Route::resource('navigations', App\Http\Controllers\Admin\NavigationController::class);
+
     Route::post('/navigations/update-order', [App\Http\Controllers\Admin\NavigationController::class, 'updateOrder'])->name('navigations.update-order');
     Route::post('/navigations/{navigation}/toggle-status', [App\Http\Controllers\Admin\NavigationController::class, 'toggleStatus'])->name('navigations.toggle-status');
     Route::delete('/navigations/bulk-delete', [App\Http\Controllers\Admin\NavigationController::class, 'bulkDelete'])->name('navigations.bulk-delete');
     Route::post('/navigations/bulk-toggle-status', [App\Http\Controllers\Admin\NavigationController::class, 'bulkToggleStatus'])->name('navigations.bulk-toggle-status');
+    // Navigation resource routes (MUST come after custom routes)
+
 
     // Registration management routes
     Route::resource('registrations', App\Http\Controllers\Admin\RegistrationController::class)->only(['index', 'show', 'update']);
     Route::post('/registrations/bulk-update', [App\Http\Controllers\Admin\RegistrationController::class, 'bulkUpdate'])->name('registrations.bulk-update');
     Route::get('/registrations/documents/{document}/download', [App\Http\Controllers\Admin\RegistrationController::class, 'downloadDocument'])->name('registrations.documents.download');
     Route::post('/registrations/documents/{document}/status', [App\Http\Controllers\Admin\RegistrationController::class, 'updateDocumentStatus'])->name('registrations.documents.update-status');
-});
 
+
+
+});
+  Route::get('/navigations-new/{{navigation}}/edit', function(){
+        dd('test');
+     });
 // Dynamic Pages (must be last)
 Route::get('/{slug}', [HomeController::class, 'page'])->name('page.show');
+
+

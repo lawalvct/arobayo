@@ -26,7 +26,7 @@
                             <h5 class="fw-bold">{{ $executive->name }}</h5>
                             <p class="text-primary-custom fw-semibold">{{ $executive->position }}</p>
                             @if($executive->bio)
-                                <p class="small text-muted">{{ Str::limit($executive->bio, 100) }}</p>
+                                <p class="small text-muted">{{ strlen($executive->bio) > 100 ? substr($executive->bio, 0, 100) . '...' : $executive->bio }}</p>
                             @endif
                         </div>
                     </div>

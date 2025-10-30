@@ -1,14 +1,4 @@
-@php
-    // Handle case where $navigation might be a collection instead of a model
-    if (is_object($navigation) && $navigation instanceof \Illuminate\Database\Eloquent\Collection) {
-        $navigation = $navigation->first();
-    }
-
-    // If still not a valid navigation model, skip rendering
-    if (!is_object($navigation) || !method_exists($navigation, 'getAttribute')) {
-        return;
-    }
-@endphp
+@if($navigation && isset($navigation->id))
 
 <div class="tree-item tree-level-{{ $level ?? 0 }}"
      data-id="{{ $navigation->id ?? '' }}"
@@ -52,11 +42,32 @@
             @endif
 
             <div class="tree-actions">
+                {{-- View Site Action --}}
+                @php
+                    $viewUrl = '#';
+                    if (isset($navigation->page) && $navigation->page) {
+                        $viewUrl = $navigation->page->slug === 'home' ? route('home') : route('page.show', $navigation->page->slug);
+                    } elseif ($navigation->url) {
+                        $viewUrl = $navigation->url;
+                    }
+                @endphp
+
+                @if($viewUrl !== '#')
+                    <a href="{{ $viewUrl }}"
+                       class="btn btn-sm btn-outline-info"
+                       title="View on Site"
+                       target="{{ ($navigation->target ?? '_self') === '_blank' ? '_blank' : '_self' }}">
+                        <i class="fas fa-external-link-alt"></i>
+                    </a>
+                @endif
+
+                {{-- Edit Action --}}
                 <a href="{{ route('admin.navigations.edit', $navigation->id ?? 0) }}"
                    class="btn btn-sm btn-outline-primary" title="Edit">
                     <i class="fas fa-edit"></i>
                 </a>
 
+                {{-- Toggle Status Action --}}
                 <form action="{{ route('admin.navigations.toggle-status', $navigation->id ?? 0) }}"
                       method="POST" style="display: inline;">
                     @csrf
@@ -107,3 +118,4 @@
         </div>
     @endif
 </div>
+@endif

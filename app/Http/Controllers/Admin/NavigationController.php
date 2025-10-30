@@ -12,12 +12,19 @@ class NavigationController extends Controller
 {
     public function index()
     {
+        // Get all navigations first to check the data structure
+        $allNavigations = Navigation::with('page')->orderBy('sort_order')->get();
+
+        // Get top-level navigations (parent_id is null)
         $navigations = Navigation::with(['children', 'page'])
             ->whereNull('parent_id')
             ->orderBy('sort_order')
             ->get();
 
-        $allNavigations = Navigation::with('page')->orderBy('sort_order')->get();
+        // If no top-level items exist but we have navigations, show all items
+        if ($navigations->isEmpty() && $allNavigations->isNotEmpty()) {
+            $navigations = $allNavigations;
+        }
 
         return view('admin.navigations.index', compact('navigations', 'allNavigations'));
     }

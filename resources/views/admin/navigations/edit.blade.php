@@ -126,7 +126,6 @@
                                 • <code>{{ route('events.index') }}</code> - Route URL
                             </div>
                         </div>
-                        </div>
 
                         <div class="mb-3">
                             <label for="icon" class="form-label fw-bold">Icon (Optional)</label>
