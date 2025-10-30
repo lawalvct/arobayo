@@ -33,7 +33,7 @@
                                     {{ $event->title }}
                                 </a>
                             </h5>
-                            <p class="card-text text-muted">{{ Str::limit($event->description, 100) }}</p>
+                            <p class="card-text text-muted">{{ strlen($event->description) > 100 ? substr($event->description, 0, 100) . '...' : $event->description }}</p>
                             @if($event->location)
                                 <p class="small text-primary-custom">
                                     <i class="fas fa-map-marker-alt me-1"></i>
