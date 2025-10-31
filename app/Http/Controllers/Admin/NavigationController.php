@@ -57,40 +57,44 @@ class NavigationController extends Controller
 
         Navigation::create([
             'label' => $request->label,
-            'url' => $request->url ?: null, // Ensure null instead of empty string
-            'page_id' => $request->page_id ?: null, // Ensure null instead of empty string
-            'parent_id' => $request->parent_id,
+            'url' => $request->filled('url') ? $request->url : null,
+            'page_id' => $request->filled('page_id') ? $request->page_id : null,
+            'parent_id' => $request->filled('parent_id') ? $request->parent_id : null,
             'sort_order' => $request->sort_order,
             'is_active' => $request->boolean('is_active', true),
             'target' => $request->target,
-            'icon' => $request->icon ?: null // Ensure null instead of empty string
+            'icon' => $request->filled('icon') ? $request->icon : null
         ]);
 
         return redirect()->route('admin.navigations.index')
             ->with('success', 'Navigation item created successfully!');
     }
 
-    public function show(Navigation $navigation)
+    public function show($id)
     {
-        $navigation->load('children', 'parent');
+        $navigation = Navigation::with(['children', 'parent'])->findOrFail($id);
         return view('admin.navigations.show', compact('navigation'));
     }
 
-    public function edit(Navigation $navigation)
+    public function edit($id)
     {
+        $navigation = Navigation::findOrFail($id);
+
         $parentNavigations = Navigation::whereNull('parent_id')
             ->where('id', '!=', $navigation->id)
-            ->active()
+            ->where('is_active', true)
             ->orderBy('sort_order')
             ->get();
 
-        $pages = Page::active()->orderBy('title')->get();
+        $pages = Page::where('is_active', true)->orderBy('title')->get();
 
         return view('admin.navigations.edit', compact('navigation', 'parentNavigations', 'pages'));
     }
 
-    public function update(Request $request, Navigation $navigation)
+    public function update(Request $request, $id)
     {
+        $navigation = Navigation::findOrFail($id);
+
         $request->validate([
             'label' => 'required|string|max:255',
             'url' => 'required_without:page_id|nullable|string|max:255',
@@ -108,21 +112,22 @@ class NavigationController extends Controller
 
         $navigation->update([
             'label' => $request->label,
-            'url' => $request->url ?: null, // Ensure null instead of empty string
-            'page_id' => $request->page_id ?: null, // Ensure null instead of empty string
-            'parent_id' => $request->parent_id,
+            'url' => $request->filled('url') ? $request->url : null,
+            'page_id' => $request->filled('page_id') ? $request->page_id : null,
+            'parent_id' => $request->filled('parent_id') ? $request->parent_id : null,
             'sort_order' => $request->sort_order ?? $navigation->sort_order,
             'is_active' => $request->boolean('is_active'),
             'target' => $request->target,
-            'icon' => $request->icon ?: null // Ensure null instead of empty string
+            'icon' => $request->filled('icon') ? $request->icon : null
         ]);
 
         return redirect()->route('admin.navigations.index')
             ->with('success', 'Navigation item updated successfully!');
     }
 
-    public function destroy(Navigation $navigation)
+    public function destroy($id)
     {
+        $navigation = Navigation::findOrFail($id);
         // Check if it has children
         if ($navigation->children()->count() > 0) {
             return redirect()->route('admin.navigations.index')
@@ -143,13 +148,11 @@ class NavigationController extends Controller
         $request->validate([
             'items' => 'required|array',
             'items.*.id' => 'required|exists:navigations,id',
-            'items.*.parent_id' => 'nullable|exists:navigations,id',
             'items.*.sort_order' => 'required|integer|min:0'
         ]);
 
         foreach ($request->items as $item) {
             Navigation::where('id', $item['id'])->update([
-                'parent_id' => $item['parent_id'],
                 'sort_order' => $item['sort_order']
             ]);
         }
@@ -160,8 +163,9 @@ class NavigationController extends Controller
     /**
      * Toggle navigation item active status
      */
-    public function toggleStatus(Navigation $navigation)
+    public function toggleStatus($id)
     {
+        $navigation = Navigation::findOrFail($id);
         $navigation->update([
             'is_active' => !$navigation->is_active
         ]);
@@ -219,3 +223,4 @@ class NavigationController extends Controller
             ->with('success', count($request->ids) . " navigation items {$action} successfully!");
     }
 }
+

@@ -416,11 +416,14 @@ function updateNavigationOrder() {
         });
     });
 
+    const csrfToken = document.querySelector('meta[name="csrf-token"]');
+    const token = csrfToken ? csrfToken.content : '{{ csrf_token() }}';
+
     fetch('{{ route("admin.navigations.update-order") }}', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content || '{{ csrf_token() }}'
+            'X-CSRF-TOKEN': token
         },
         body: JSON.stringify({ items: items })
     })
@@ -428,6 +431,13 @@ function updateNavigationOrder() {
     .then(data => {
         if (data.success) {
             showAlert('success', 'Navigation order updated successfully!');
+            // Update sort order display
+            rows.forEach((row, index) => {
+                const sortOrderText = row.querySelector('small.text-muted');
+                if (sortOrderText) {
+                    sortOrderText.textContent = `Sort Order: ${index + 1}`;
+                }
+            });
         } else {
             showAlert('danger', 'Failed to update navigation order.');
         }

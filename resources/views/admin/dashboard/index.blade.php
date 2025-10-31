@@ -254,13 +254,13 @@
                             </a>
                         </div>
                         <div class="col-lg-3 col-md-6 mb-3">
-                            <a href="#" class="quick-action-btn warning">
+                            <a href="{{ route('admin.executives.create') }}" class="quick-action-btn warning">
                                 <i class="fas fa-user-tie me-2"></i>
                                 Add Executive
                             </a>
                         </div>
                         <div class="col-lg-3 col-md-6 mb-3">
-                            <a href="#" class="quick-action-btn danger">
+                            <a href="{{ route('admin.settings.index') }}" class="quick-action-btn danger">
                                 <i class="fas fa-cogs me-2"></i>
                                 Site Settings
                             </a>

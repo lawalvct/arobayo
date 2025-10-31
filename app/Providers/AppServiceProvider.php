@@ -37,30 +37,33 @@ class AppServiceProvider extends ServiceProvider
         // Share navigation data with all views
         View::composer('*', function ($view) {
             try {
-                // Get navigation items
-                $navigation = Navigation::with('children')
-                    ->mainMenu()
-                    ->active()
+                // Get navigation items with active children
+                $globalNavigations = Navigation::where('is_active', true)
+                    ->whereNull('parent_id')
+                    ->with(['children' => function($query) {
+                        $query->where('is_active', true)->orderBy('sort_order');
+                    }])
                     ->orderBy('sort_order')
                     ->get();
 
-                // Get site settings (assuming you have this model, if not, we'll use defaults)
-                $siteSettings = [
+                // Get site settings
+                $settings = SiteSetting::all();
+                $siteSettings = [];
+                foreach ($settings as $setting) {
+                    $siteSettings[$setting->key] = $setting->value;
+                }
+
+                // Add defaults if not set
+                $siteSettings = array_merge([
                     'site_name' => config('app.name', 'Egbe Arobayo'),
                     'footer_description' => 'Preserving and promoting Yoruba culture, traditions, and values for future generations.',
-                    'phone' => '+234 XXX XXX XXXX',
-                    'email' => 'info@egbearobayo.com',
-                    'address' => 'Lagos, Nigeria',
-                    'facebook_url' => '#',
-                    'twitter_url' => '#',
-                    'instagram_url' => '#'
-                ];
+                ], $siteSettings);
 
-                $view->with('navigation', $navigation);
+                $view->with('globalNavigations', $globalNavigations);
                 $view->with('siteSettings', $siteSettings);
             } catch (\Exception $e) {
                 // If database is not available or migration hasn't run, provide defaults
-                $view->with('navigation', collect());
+                $view->with('globalNavigations', collect());
                 $view->with('siteSettings', [
                     'site_name' => config('app.name', 'Egbe Arobayo'),
                     'footer_description' => 'Preserving and promoting Yoruba culture, traditions, and values for future generations.'

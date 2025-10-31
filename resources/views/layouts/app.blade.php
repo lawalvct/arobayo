@@ -39,8 +39,8 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('home') }}">Home</a>
                     </li>
-                    @if(isset($navigation) && $navigation->count() > 0)
-                        @foreach($navigation as $nav)
+                    @if(isset($globalNavigations) && $globalNavigations->count() > 0)
+                        @foreach($globalNavigations as $nav)
                             <li class="nav-item {{ $nav->children->count() > 0 ? 'dropdown' : '' }}">
                                 @if($nav->children->count() > 0)
                                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
@@ -50,11 +50,11 @@
                                         {{ $nav->label }}
                                     </a>
                                     <ul class="dropdown-menu">
-                                        @foreach($nav->children as $child)
+                                        @foreach($nav->children->where('is_active', true) as $child)
                                             <li>
                                                 <a class="dropdown-item"
-                                                   href="{{ $child->url }}"
-                                                   target="{{ $child->target }}">
+                                                   href="{{ $child->getNavigationUrl() }}"
+                                                   target="{{ $child->target ?? '_self' }}">
                                                     @if($child->icon)
                                                         <i class="{{ $child->icon }} me-2"></i>
                                                     @endif
@@ -65,8 +65,8 @@
                                     </ul>
                                 @else
                                     <a class="nav-link"
-                                       href="{{ $nav->url }}"
-                                       target="{{ $nav->target }}">
+                                       href="{{ $nav->getNavigationUrl() }}"
+                                       target="{{ $nav->target ?? '_self' }}">
                                         @if($nav->icon)
                                             <i class="{{ $nav->icon }} me-1"></i>
                                         @endif

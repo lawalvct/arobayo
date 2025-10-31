@@ -36,10 +36,6 @@ Route::get('/contact', function() {
     return app(\App\Http\Controllers\HomeController::class)->page('contact');
 })->name('contact');
 
-  Route::get('/navigations-new/{{navigation}}/edit', function(){
-        dd('test');
-     });
-
 // Admin Routes (protected by auth and admin middleware)
 Route::prefix('admin')->name('admin.')->middleware(['admin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -72,6 +68,10 @@ Route::prefix('admin')->name('admin.')->middleware(['admin'])->group(function ()
     Route::post('/navigations/bulk-toggle-status', [App\Http\Controllers\Admin\NavigationController::class, 'bulkToggleStatus'])->name('navigations.bulk-toggle-status');
     // Navigation resource routes (MUST come after custom routes)
 
+    // Site Settings
+    Route::get('/settings', [App\Http\Controllers\Admin\SiteSettingController::class, 'index'])->name('settings.index');
+    Route::post('/settings', [App\Http\Controllers\Admin\SiteSettingController::class, 'update'])->name('settings.update');
+
 
     // Registration management routes
     Route::resource('registrations', App\Http\Controllers\Admin\RegistrationController::class)->only(['index', 'show', 'update']);
@@ -80,11 +80,8 @@ Route::prefix('admin')->name('admin.')->middleware(['admin'])->group(function ()
     Route::post('/registrations/documents/{document}/status', [App\Http\Controllers\Admin\RegistrationController::class, 'updateDocumentStatus'])->name('registrations.documents.update-status');
 
 
-
 });
-  Route::get('/navigations-new/{{navigation}}/edit', function(){
-        dd('test');
-     });
+
 // Dynamic Pages (must be last)
 Route::get('/{slug}', [HomeController::class, 'page'])->name('page.show');
 
