@@ -82,23 +82,40 @@
 
                                 <!-- Image Upload -->
                                 <div class="mb-3">
-                                    <label for="image" class="form-label">Image <span class="text-danger">*</span></label>
-                                    <input type="file"
-                                           class="form-control @error('image') is-invalid @enderror"
-                                           id="image"
-                                           name="image"
-                                           accept="image/*"
-                                           required>
-                                    @error('image')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                    <div class="form-text">
-                                        Supported formats: JPEG, PNG, JPG, GIF, WebP. Maximum size: 5MB
+                                    <label class="form-label">Image <span class="text-danger">*</span></label>
+                                    <div class="btn-group w-100 mb-2" role="group">
+                                        <input type="radio" class="btn-check" name="image_source" id="upload_new" value="upload" checked>
+                                        <label class="btn btn-outline-primary" for="upload_new">
+                                            <i class="fas fa-upload me-1"></i> Upload New
+                                        </label>
+                                        <input type="radio" class="btn-check" name="image_source" id="from_media" value="media">
+                                        <label class="btn btn-outline-primary" for="from_media">
+                                            <i class="fas fa-photo-video me-1"></i> Choose from Media
+                                        </label>
                                     </div>
 
-                                    <!-- Image Preview -->
-                                    <div id="imagePreview" class="mt-3" style="display: none;">
-                                        <img id="previewImg" src="" alt="Preview" class="img-thumbnail" style="max-width: 200px;">
+                                    <div id="uploadSection">
+                                        <input type="file"
+                                               class="form-control @error('images') is-invalid @enderror"
+                                               id="images"
+                                               name="images[]"
+                                               accept="image/*"
+                                               multiple>
+                                        @error('images')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                        <div class="form-text">
+                                            Select multiple images. Max 5MB per file.
+                                        </div>
+                                        <div id="imagePreview" class="mt-3 d-flex flex-wrap gap-2"></div>
+                                    </div>
+
+                                    <div id="mediaSection" style="display: none;">
+                                        <div id="selectedMediaIds"></div>
+                                        <button type="button" class="btn btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#mediaModal">
+                                            <i class="fas fa-images me-2"></i>Select from Media Library
+                                        </button>
+                                        <div id="selectedMedia" class="mt-3 d-flex flex-wrap gap-2"></div>
                                     </div>
                                 </div>
 
@@ -243,43 +260,164 @@
         </div>
     </div>
 </div>
+
+<!-- Media Library Modal -->
+<div class="modal fade" id="mediaModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-photo-video me-2"></i>
+                    Select from Media Library
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <button type="button" class="btn btn-success" onclick="confirmMediaSelection()">
+                        <i class="fas fa-check me-2"></i>Confirm Selection
+                    </button>
+                    <span id="selectionCount" class="ms-2 text-muted">0 selected</span>
+                </div>
+                <div class="row g-3" id="mediaLibrary">
+                    <div class="col-12 text-center py-4">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('scripts')
 <script>
-// Image preview functionality
-document.getElementById('image').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    const preview = document.getElementById('imagePreview');
-    const previewImg = document.getElementById('previewImg');
+let selectedMediaItems = [];
 
-    if (file) {
-        // Check file size (5MB = 5 * 1024 * 1024 bytes)
+// Toggle between upload and media selection
+document.querySelectorAll('input[name="image_source"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        const uploadSection = document.getElementById('uploadSection');
+        const mediaSection = document.getElementById('mediaSection');
+        const imageInput = document.getElementById('images');
+        
+        if (this.value === 'upload') {
+            uploadSection.style.display = 'block';
+            mediaSection.style.display = 'none';
+            imageInput.required = true;
+            selectedMediaItems = [];
+        } else {
+            uploadSection.style.display = 'none';
+            mediaSection.style.display = 'block';
+            imageInput.required = false;
+            imageInput.value = '';
+            document.getElementById('imagePreview').innerHTML = '';
+        }
+    });
+});
+
+// Load media library
+const mediaModal = document.getElementById('mediaModal');
+mediaModal.addEventListener('show.bs.modal', function() {
+    fetch('/admin/media?ajax=1')
+        .then(response => response.json())
+        .then(data => {
+            const mediaLibrary = document.getElementById('mediaLibrary');
+            mediaLibrary.innerHTML = '';
+            
+            if (data.media && data.media.length > 0) {
+                data.media.forEach(item => {
+                    if (item.type === 'image') {
+                        const isSelected = selectedMediaItems.some(m => m.id === item.id);
+                        const col = document.createElement('div');
+                        col.className = 'col-md-3';
+                        col.innerHTML = `
+                            <div class="media-item-select ${isSelected ? 'border border-primary' : ''}" onclick="toggleMediaSelection(${item.id}, '${item.url}', '${item.title}')" style="cursor: pointer; position: relative;">
+                                <img src="${item.url}" class="img-thumbnail" style="width: 100%; height: 150px; object-fit: cover;">
+                                <p class="text-center mt-2 mb-0 small">${item.title}</p>
+                                ${isSelected ? '<div style="position: absolute; top: 10px; right: 10px; background: #0d6efd; color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;"><i class="fas fa-check"></i></div>' : ''}
+                            </div>
+                        `;
+                        mediaLibrary.appendChild(col);
+                    }
+                });
+            } else {
+                mediaLibrary.innerHTML = '<div class="col-12 text-center py-4"><p class="text-muted">No images in media library</p></div>';
+            }
+            updateSelectionCount();
+        });
+});
+
+function toggleMediaSelection(id, url, title) {
+    const index = selectedMediaItems.findIndex(m => m.id === id);
+    if (index > -1) {
+        selectedMediaItems.splice(index, 1);
+    } else {
+        selectedMediaItems.push({ id, url, title });
+    }
+    
+    // Reload media library to show selection
+    mediaModal.dispatchEvent(new Event('show.bs.modal'));
+}
+
+function confirmMediaSelection() {
+    const container = document.getElementById('selectedMedia');
+    const idsContainer = document.getElementById('selectedMediaIds');
+    container.innerHTML = '';
+    idsContainer.innerHTML = '';
+    
+    selectedMediaItems.forEach(item => {
+        idsContainer.innerHTML += `<input type="hidden" name="media_ids[]" value="${item.id}">`;
+        container.innerHTML += `
+            <div class="position-relative">
+                <img src="${item.url}" class="img-thumbnail" style="width: 150px; height: 150px; object-fit: cover;">
+                <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0" onclick="removeMediaItem(${item.id})">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `;
+    });
+    
+    bootstrap.Modal.getInstance(document.getElementById('mediaModal')).hide();
+}
+
+function removeMediaItem(id) {
+    selectedMediaItems = selectedMediaItems.filter(m => m.id !== id);
+    confirmMediaSelection();
+}
+
+function updateSelectionCount() {
+    document.getElementById('selectionCount').textContent = `${selectedMediaItems.length} selected`;
+}
+
+// Image preview functionality
+document.getElementById('images').addEventListener('change', function(e) {
+    const files = Array.from(e.target.files);
+    const preview = document.getElementById('imagePreview');
+    preview.innerHTML = '';
+
+    files.forEach(file => {
         if (file.size > 5 * 1024 * 1024) {
-            alert('File size must be less than 5MB');
-            e.target.value = '';
-            preview.style.display = 'none';
+            alert(`${file.name} is too large (max 5MB)`);
             return;
         }
 
-        // Check file type
         const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp'];
         if (!allowedTypes.includes(file.type)) {
-            alert('Please select a valid image file (JPEG, PNG, GIF, WebP)');
-            e.target.value = '';
-            preview.style.display = 'none';
+            alert(`${file.name} is not a valid image`);
             return;
         }
 
         const reader = new FileReader();
         reader.onload = function(e) {
-            previewImg.src = e.target.result;
-            preview.style.display = 'block';
+            const div = document.createElement('div');
+            div.innerHTML = `<img src="${e.target.result}" class="img-thumbnail" style="width: 150px; height: 150px; object-fit: cover;">`;
+            preview.appendChild(div);
         };
         reader.readAsDataURL(file);
-    } else {
-        preview.style.display = 'none';
-    }
+    });
 });
 
 // Auto-generate category suggestions
@@ -291,16 +429,23 @@ document.getElementById('category').addEventListener('input', function(e) {
 // Form validation
 document.querySelector('form').addEventListener('submit', function(e) {
     const title = document.getElementById('title').value.trim();
-    const image = document.getElementById('image').files[0];
+    const imageSource = document.querySelector('input[name="image_source"]:checked').value;
+    const images = document.getElementById('images').files;
 
     if (!title) {
-        alert('Please enter a title for the gallery image');
+        alert('Please enter a title for the gallery');
         e.preventDefault();
         return;
     }
 
-    if (!image) {
-        alert('Please select an image to upload');
+    if (imageSource === 'upload' && images.length === 0) {
+        alert('Please select at least one image to upload');
+        e.preventDefault();
+        return;
+    }
+
+    if (imageSource === 'media' && selectedMediaItems.length === 0) {
+        alert('Please select at least one image from media library');
         e.preventDefault();
         return;
     }

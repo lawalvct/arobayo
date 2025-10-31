@@ -19,6 +19,8 @@ class Media extends Model
         'uploaded_by'
     ];
 
+    protected $appends = ['url'];
+
     public function uploader()
     {
         return $this->belongsTo(User::class, 'uploaded_by');

@@ -10,8 +10,13 @@ use Illuminate\Support\Str;
 
 class MediaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        if ($request->ajax() || $request->has('ajax')) {
+            $media = Media::where('type', 'image')->latest()->get();
+            return response()->json(['media' => $media]);
+        }
+        
         $media = Media::with('uploader')->latest()->paginate(24);
         return view('admin.media.index', compact('media'));
     }

@@ -40,28 +40,62 @@ class GalleryController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120', // 5MB max
+            'images' => 'nullable|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+            'media_ids' => 'nullable|array',
+            'media_ids.*' => 'exists:media,id',
             'category' => 'nullable|string|max:100',
             'is_active' => 'boolean',
             'sort_order' => 'nullable|integer|min:0',
         ]);
 
-        $validated['is_active'] = $request->has('is_active');
-        $validated['sort_order'] = $validated['sort_order'] ?? 0;
+        $isActive = $request->has('is_active');
+        $sortOrder = $validated['sort_order'] ?? 0;
+        $count = 0;
 
-        if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('galleries', 'public');
+        // Handle media library selections
+        if ($request->filled('media_ids')) {
+            foreach ($request->media_ids as $mediaId) {
+                $media = \App\Models\Media::findOrFail($mediaId);
+                Gallery::create([
+                    'title' => $validated['title'],
+                    'description' => $validated['description'],
+                    'image' => $media->path,
+                    'category' => $validated['category'],
+                    'is_active' => $isActive,
+                    'sort_order' => $sortOrder + $count
+                ]);
+                $count++;
+            }
         }
 
-        Gallery::create($validated);
+        // Handle file uploads
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $path = $image->store('galleries', 'public');
+                Gallery::create([
+                    'title' => $validated['title'],
+                    'description' => $validated['description'],
+                    'image' => $path,
+                    'category' => $validated['category'],
+                    'is_active' => $isActive,
+                    'sort_order' => $sortOrder + $count
+                ]);
+                $count++;
+            }
+        }
+
+        if ($count === 0) {
+            return back()->withErrors(['images' => 'Please upload images or select from media library']);
+        }
 
         if ($request->has('save_and_new')) {
             return redirect()->route('admin.galleries.create')
-                ->with('success', 'Gallery item created successfully. Add another one below.');
+                ->with('success', "{$count} gallery item(s) created successfully. Add more below.");
         }
 
         return redirect()->route('admin.galleries.index')
-            ->with('success', 'Gallery item created successfully.');
+            ->with('success', "{$count} gallery item(s) created successfully.");
     }
 
     public function show(Gallery $gallery)
