@@ -25,4 +25,9 @@ class Registration extends Model
     {
         return $this->hasMany(RegistrationDocument::class);
     }
+
+    public function scopePending($query)
+    {
+        return $query->where('status', 'pending');
+    }
 }

@@ -88,6 +88,12 @@ Route::prefix('admin')->name('admin.')->middleware(['admin'])->group(function ()
 
 });
 
+// Profile Routes (authenticated users)
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
+    Route::post('/profile', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+});
+
 // Dynamic Pages (must be last)
 Route::get('/{slug}', [HomeController::class, 'page'])->name('page.show');
 
