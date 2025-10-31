@@ -3,20 +3,22 @@
 @section('title', 'Create New Page - Egbe Arobayo')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h2 class="admin-page-title">
-            <i class="fas fa-plus me-3"></i>
-            Create New Page
-        </h2>
-        <p class="admin-page-subtitle mb-0">
-            Create a new page for your website
-        </p>
+<div class="page-header mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="admin-page-title">
+                <i class="fas fa-plus me-3"></i>
+                Create New Page
+            </h2>
+            <p class="admin-page-subtitle mb-0">
+                Create a new page for your website
+            </p>
+        </div>
+        <a href="{{ route('admin.pages.index') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i>
+            Back to Pages
+        </a>
     </div>
-    <a href="{{ route('admin.pages.index') }}" class="btn btn-secondary">
-        <i class="fas fa-arrow-left me-2"></i>
-        Back to Pages
-    </a>
 </div>
 
 @if ($errors->any())
@@ -37,9 +39,8 @@
 
     <div class="row">
         <div class="col-lg-8">
-            <!-- Main Content -->
             <div class="admin-card mb-4">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header">
                     <h5 class="mb-0">
                         <i class="fas fa-edit me-2"></i>
                         Page Content
@@ -70,21 +71,20 @@
 
                     <div class="mb-3">
                         <label for="content" class="form-label">Page Content <span class="text-danger">*</span></label>
+                        <div id="editor" style="height: 400px;"></div>
                         <textarea class="form-control @error('content') is-invalid @enderror"
-                                  id="content" name="content" rows="15" required>{{ old('content') }}</textarea>
+                                  id="content" name="content" style="display:none;" required>{{ old('content') }}</textarea>
                         @error('content')
-                            <div class="invalid-feedback">{{ $message }}</div>
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
-                        <div class="form-text">You can use HTML tags and basic styling.</div>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="col-lg-4">
-            <!-- Page Settings -->
             <div class="admin-card mb-4">
-                <div class="card-header bg-success text-white">
+                <div class="card-header">
                     <h5 class="mb-0">
                         <i class="fas fa-cogs me-2"></i>
                         Page Settings
@@ -120,9 +120,8 @@
                 </div>
             </div>
 
-            <!-- SEO Settings -->
             <div class="admin-card mb-4">
-                <div class="card-header bg-info text-white">
+                <div class="card-header">
                     <h5 class="mb-0">
                         <i class="fas fa-search me-2"></i>
                         SEO Settings
@@ -151,23 +150,18 @@
                 </div>
             </div>
 
-            <!-- Publish -->
             <div class="admin-card">
-                <div class="card-header bg-warning text-dark">
+                <div class="card-header">
                     <h5 class="mb-0">
                         <i class="fas fa-rocket me-2"></i>
                         Publish
                     </h5>
                 </div>
                 <div class="card-body">
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn admin-btn-primary">
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">
                             <i class="fas fa-plus me-2"></i>
                             Create Page
-                        </button>
-                        <button type="button" class="btn btn-outline-secondary" onclick="saveDraft()">
-                            <i class="fas fa-save me-2"></i>
-                            Save Draft
                         </button>
                     </div>
                 </div>
@@ -178,7 +172,15 @@
 @endsection
 
 @section('styles')
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 <style>
+.page-header {
+    background: white;
+    border-radius: 15px;
+    padding: 25px 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
 .admin-page-title {
     color: #2596be;
     font-weight: 700;
@@ -191,27 +193,122 @@
     font-size: 1rem;
 }
 
+.admin-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+    border: none;
+}
+
+.admin-card .card-header {
+    background: linear-gradient(135deg, #2596be 0%, #4b95c4 100%);
+    color: white;
+    padding: 18px 25px;
+    border: none;
+}
+
+.admin-card .card-body {
+    padding: 25px;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+}
+
+.form-control, .form-select {
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #2596be;
+    box-shadow: 0 0 0 0.2rem rgba(37, 150, 190, 0.15);
+}
+
 .form-text {
     font-size: 0.875rem;
     color: #6c757d;
-}
-
-#content {
-    font-family: 'Courier New', monospace;
-    font-size: 0.9rem;
+    margin-top: 6px;
 }
 
 .input-group-text {
     background: #f8f9fa;
-    border-color: #ced4da;
+    border-color: #dee2e6;
     color: #6c757d;
+    padding: 10px 15px;
+}
+
+#editor {
+    background: white;
+    border-radius: 8px;
+}
+
+.ql-toolbar {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-color: #dee2e6;
+    background: #f8f9fa;
+}
+
+.ql-container {
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    font-size: 16px;
+    border-color: #dee2e6;
+}
+
+.btn-lg {
+    padding: 12px 20px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+}
+
+.alert {
+    border-radius: 12px;
+    padding: 15px 20px;
+}
+
+.mb-3 {
+    margin-bottom: 1.5rem !important;
+}
+
+.mb-4 {
+    margin-bottom: 1.75rem !important;
 }
 </style>
 @endsection
 
 @section('scripts')
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 <script>
+let quill;
+
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Quill editor
+    quill = new Quill('#editor', {
+        theme: 'snow',
+        modules: {
+            toolbar: [
+                [{ 'header': [1, 2, 3, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                ['link', 'image'],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                [{ 'align': [] }],
+                ['clean']
+            ]
+        }
+    });
+
+    // Set initial content
+    const content = document.getElementById('content').value;
+    if (content) {
+        quill.root.innerHTML = content;
+    }
+
     // Auto-generate slug from title
     const titleInput = document.getElementById('title');
     const slugInput = document.getElementById('slug');
@@ -219,57 +316,24 @@ document.addEventListener('DOMContentLoaded', function() {
     titleInput.addEventListener('input', function() {
         const title = this.value;
         const slug = title.toLowerCase()
-            .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
-            .replace(/\s+/g, '-') // Replace spaces with hyphens
-            .replace(/-+/g, '-') // Replace multiple hyphens with single
-            .trim('-'); // Remove leading/trailing hyphens
+            .replace(/[^a-z0-9\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-')
+            .trim('-');
 
         if (!slugInput.hasAttribute('data-manual')) {
             slugInput.value = slug;
         }
     });
 
-    // Mark slug as manually edited if user types in it
     slugInput.addEventListener('input', function() {
         this.setAttribute('data-manual', 'true');
     });
 
-    // Template change handler
-    const templateSelect = document.getElementById('template');
-    const contentTextarea = document.getElementById('content');
-
-    templateSelect.addEventListener('change', function() {
-        if (this.value === 'home' && !contentTextarea.value.trim()) {
-            contentTextarea.value = getDefaultHomeContent();
-        }
+    // Sync Quill content to textarea on form submit
+    document.querySelector('form').addEventListener('submit', function() {
+        document.getElementById('content').value = quill.root.innerHTML;
     });
 });
-
-function getDefaultHomeContent() {
-    return `<!-- Home Page Content -->
-<div class="home-content">
-    <h1>Welcome to Our Website</h1>
-    <p>This is the home page content. You can edit this content to match your needs.</p>
-
-    <section class="features">
-        <h2>Features</h2>
-        <ul>
-            <li>Feature 1</li>
-            <li>Feature 2</li>
-            <li>Feature 3</li>
-        </ul>
-    </section>
-</div>`;
-}
-
-function saveDraft() {
-    // Temporarily uncheck active status
-    const activeCheckbox = document.getElementById('is_active');
-    const wasChecked = activeCheckbox.checked;
-    activeCheckbox.checked = false;
-
-    // Submit form
-    document.querySelector('form').submit();
-}
 </script>
 @endsection

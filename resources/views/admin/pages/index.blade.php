@@ -3,20 +3,22 @@
 @section('title', 'Pages Management - Egbe Arobayo')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h2 class="admin-page-title">
-            <i class="fas fa-file-alt me-3"></i>
-            Pages Management
-        </h2>
-        <p class="admin-page-subtitle mb-0">
-            Manage website pages and content sections
-        </p>
+<div class="page-header mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="admin-page-title">
+                <i class="fas fa-file-alt me-3"></i>
+                Pages Management
+            </h2>
+            <p class="admin-page-subtitle mb-0">
+                Manage website pages and content sections
+            </p>
+        </div>
+        <a href="{{ route('admin.pages.create') }}" class="btn admin-btn-primary">
+            <i class="fas fa-plus me-2"></i>
+            Add New Page
+        </a>
     </div>
-    <a href="{{ route('admin.pages.create') }}" class="btn admin-btn-primary">
-        <i class="fas fa-plus me-2"></i>
-        Add New Page
-    </a>
 </div>
 
 @if(session('success'))
@@ -36,11 +38,14 @@
 @endif
 
 <div class="admin-card">
-    <div class="card-header bg-primary text-white">
+    <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">
             <i class="fas fa-list me-2"></i>
-            All Pages
+            All Pages ({{ $pages->count() }})
         </h5>
+        <div class="search-box">
+            <input type="text" id="searchPages" class="form-control form-control-sm" placeholder="Search pages...">
+        </div>
     </div>
     <div class="card-body p-0">
         @if($pages->count() > 0)
@@ -100,33 +105,21 @@
                                     </small>
                                 </td>
                                 <td>
-                                    <div class="btn-group" role="group">
-                                        <a href="{{ route('admin.pages.show', $page) }}"
-                                           class="btn btn-outline-info btn-sm"
-                                           title="View">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
+                                    <div class="d-flex gap-1">
                                         <a href="{{ route('admin.pages.edit', $page) }}"
-                                           class="btn btn-outline-primary btn-sm"
+                                           class="btn btn-sm btn-primary"
                                            title="Edit">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        @if($page->slug === 'home')
-                                            <a href="{{ route('admin.pages.edit', $page) }}"
-                                               class="btn btn-outline-warning btn-sm"
-                                               title="Edit Home Sections">
-                                                <i class="fas fa-cogs"></i>
-                                            </a>
-                                        @endif
                                         <a href="{{ url($page->slug === 'home' ? '/' : '/' . $page->slug) }}"
-                                           class="btn btn-outline-secondary btn-sm"
+                                           class="btn btn-sm btn-secondary"
                                            title="Preview"
                                            target="_blank">
                                             <i class="fas fa-external-link-alt"></i>
                                         </a>
                                         @if($page->slug !== 'home')
                                             <button type="button"
-                                                    class="btn btn-outline-danger btn-sm"
+                                                    class="btn btn-sm btn-danger"
                                                     title="Delete"
                                                     onclick="confirmDelete('{{ $page->id }}', '{{ $page->title }}')">
                                                 <i class="fas fa-trash"></i>
@@ -189,6 +182,13 @@
 
 @section('styles')
 <style>
+.page-header {
+    background: white;
+    border-radius: 15px;
+    padding: 25px 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
 .admin-page-title {
     color: #2596be;
     font-weight: 700;
@@ -201,11 +201,31 @@
     font-size: 1rem;
 }
 
+.admin-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+}
+
+.admin-card .card-header {
+    background: linear-gradient(135deg, #2596be 0%, #4b95c4 100%);
+    color: white;
+    padding: 20px 25px;
+    border: none;
+}
+
+.search-box input {
+    width: 250px;
+    border-radius: 8px;
+}
+
 .table th {
     border-top: none;
     font-weight: 600;
     color: #495057;
     font-size: 0.9rem;
+    background: #f8f9fa;
 }
 
 .table td {
@@ -213,16 +233,17 @@
     border-top: 1px solid #f1f3f4;
 }
 
+.table tbody tr:hover {
+    background: #f8f9fa;
+}
+
 .badge {
     font-size: 0.75rem;
+    padding: 5px 10px;
 }
 
-.btn-group .btn {
-    margin-right: 2px;
-}
-
-.btn-group .btn:last-child {
-    margin-right: 0;
+.d-flex.gap-1 {
+    gap: 0.25rem;
 }
 </style>
 @endsection
@@ -236,5 +257,16 @@ function confirmDelete(pageId, pageTitle) {
     const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
     modal.show();
 }
+
+// Search functionality
+document.getElementById('searchPages').addEventListener('keyup', function() {
+    const searchTerm = this.value.toLowerCase();
+    const rows = document.querySelectorAll('tbody tr');
+    
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(searchTerm) ? '' : 'none';
+    });
+});
 </script>
 @endsection

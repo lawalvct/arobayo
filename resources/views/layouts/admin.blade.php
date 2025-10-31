@@ -364,7 +364,7 @@
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="#">
+                            <a class="dropdown-item" href="{{ route('admin.settings.index') }}">
                                 <i class="fas fa-cog me-2"></i>Settings
                             </a>
                         </li>
@@ -442,7 +442,7 @@
                     <i class="fas fa-bars"></i>
                     Navigation
                 </a>
-                <a href="#" class="sidebar-nav-item">
+                <a href="{{ route('admin.settings.index') }}" class="sidebar-nav-item">
                     <i class="fas fa-cog"></i>
                     Settings
                 </a>
