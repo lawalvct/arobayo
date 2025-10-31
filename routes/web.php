@@ -78,11 +78,12 @@ Route::prefix('admin')->name('admin.')->middleware(['admin'])->group(function ()
     Route::delete('/media/{media}', [App\Http\Controllers\Admin\MediaController::class, 'destroy'])->name('media.destroy');
 
 
-    // Registration management routes
-    Route::resource('registrations', App\Http\Controllers\Admin\RegistrationController::class)->only(['index', 'show', 'update']);
-    Route::post('/registrations/bulk-update', [App\Http\Controllers\Admin\RegistrationController::class, 'bulkUpdate'])->name('registrations.bulk-update');
-    Route::get('/registrations/documents/{document}/download', [App\Http\Controllers\Admin\RegistrationController::class, 'downloadDocument'])->name('registrations.documents.download');
-    Route::post('/registrations/documents/{document}/status', [App\Http\Controllers\Admin\RegistrationController::class, 'updateDocumentStatus'])->name('registrations.documents.update-status');
+    // Registrations
+    Route::get('/registrations', [App\Http\Controllers\Admin\RegistrationController::class, 'index'])->name('registrations.index');
+    Route::get('/registrations/{id}', [App\Http\Controllers\Admin\RegistrationController::class, 'show'])->name('registrations.show');
+    Route::post('/registrations/{id}/status', [App\Http\Controllers\Admin\RegistrationController::class, 'updateStatus'])->name('registrations.update-status');
+    Route::delete('/registrations/{id}', [App\Http\Controllers\Admin\RegistrationController::class, 'destroy'])->name('registrations.destroy');
+    Route::get('/registrations/documents/{id}/download', [App\Http\Controllers\Admin\RegistrationController::class, 'downloadDocument'])->name('registrations.documents.download');
 
 
 });

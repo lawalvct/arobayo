@@ -52,7 +52,7 @@
                     </h5>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('admin.executives.update', $executive) }}" method="POST" enctype="multipart/form-data">
+                    <form id="executiveForm" action="{{ route('admin.executives.update', $executive) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
 
@@ -270,7 +270,7 @@
 
                         <!-- Submit Buttons -->
                         <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-primary btn-lg">
                                 <i class="fas fa-save me-1"></i>
                                 Update Executive
                             </button>
@@ -283,6 +283,9 @@
                                 Cancel
                             </a>
                         </div>
+                        <small class="text-muted d-block mt-2">
+                            <i class="fas fa-keyboard me-1"></i>Press Ctrl+S to save changes
+                        </small>
                     </form>
                 </div>
             </div>
@@ -417,8 +420,16 @@ function deleteExecutive() {
     modal.show();
 }
 
+// Ctrl+S to save
+document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        document.getElementById('executiveForm').submit();
+    }
+});
+
 // Form validation
-document.querySelector('form').addEventListener('submit', function(e) {
+document.getElementById('executiveForm').addEventListener('submit', function(e) {
     const name = document.getElementById('name').value.trim();
     const position = document.getElementById('position').value.trim();
 

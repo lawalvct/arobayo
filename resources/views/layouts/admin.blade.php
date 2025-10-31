@@ -431,7 +431,7 @@
 
             <div class="nav-section">
                 <div class="nav-section-title">User Management</div>
-                <a href="#" class="sidebar-nav-item">
+                <a href="{{ route('admin.registrations.index') }}" class="sidebar-nav-item {{ request()->routeIs('admin.registrations.*') ? 'active' : '' }}">
                     <i class="fas fa-user-plus"></i>
                     Registrations
                     @if(isset($stats['pending_registrations']) && $stats['pending_registrations'] > 0)
