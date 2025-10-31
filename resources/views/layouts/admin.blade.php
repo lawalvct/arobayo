@@ -423,6 +423,10 @@
                     <i class="fas fa-file-alt"></i>
                     Pages
                 </a>
+                <a href="{{ route('admin.media.index') }}" class="sidebar-nav-item {{ request()->routeIs('admin.media.*') ? 'active' : '' }}">
+                    <i class="fas fa-photo-video"></i>
+                    Media Library
+                </a>
             </div>
 
             <div class="nav-section">

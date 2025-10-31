@@ -72,6 +72,11 @@ Route::prefix('admin')->name('admin.')->middleware(['admin'])->group(function ()
     Route::get('/settings', [App\Http\Controllers\Admin\SiteSettingController::class, 'index'])->name('settings.index');
     Route::post('/settings', [App\Http\Controllers\Admin\SiteSettingController::class, 'update'])->name('settings.update');
 
+    // Media Library
+    Route::get('/media', [App\Http\Controllers\Admin\MediaController::class, 'index'])->name('media.index');
+    Route::post('/media', [App\Http\Controllers\Admin\MediaController::class, 'store'])->name('media.store');
+    Route::delete('/media/{media}', [App\Http\Controllers\Admin\MediaController::class, 'destroy'])->name('media.destroy');
+
 
     // Registration management routes
     Route::resource('registrations', App\Http\Controllers\Admin\RegistrationController::class)->only(['index', 'show', 'update']);
