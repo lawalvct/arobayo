@@ -19,30 +19,35 @@ class MediaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'file' => 'required|file|max:51200', // 50MB max
-            'title' => 'nullable|string|max:255'
+            'files' => 'required|array',
+            'files.*' => 'file|max:51200' // 50MB max per file
         ]);
 
-        $file = $request->file('file');
-        $filename = time() . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
-        $path = $file->storeAs('media', $filename, 'public');
+        $uploadedMedia = [];
 
-        $type = $this->getFileType($file->getMimeType());
+        foreach ($request->file('files') as $file) {
+            $filename = time() . '_' . Str::random(8) . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('media', $filename, 'public');
 
-        $media = Media::create([
-            'title' => $request->title ?: pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME),
-            'filename' => $file->getClientOriginalName(),
-            'path' => $path,
-            'type' => $type,
-            'mime_type' => $file->getMimeType(),
-            'size' => $file->getSize(),
-            'uploaded_by' => auth()->id()
-        ]);
+            $type = $this->getFileType($file->getMimeType());
+
+            $media = Media::create([
+                'title' => pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME),
+                'filename' => $file->getClientOriginalName(),
+                'path' => $path,
+                'type' => $type,
+                'mime_type' => $file->getMimeType(),
+                'size' => $file->getSize(),
+                'uploaded_by' => auth()->id()
+            ]);
+
+            $uploadedMedia[] = $media;
+        }
 
         return response()->json([
             'success' => true,
-            'media' => $media,
-            'url' => $media->url
+            'count' => count($uploadedMedia),
+            'media' => $uploadedMedia
         ]);
     }
 

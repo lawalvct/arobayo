@@ -120,14 +120,11 @@
                 <form id="uploadForm" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-3">
-                        <label class="form-label">Select File</label>
-                        <input type="file" class="form-control" name="file" id="fileInput" required>
-                        <div class="form-text">Max size: 50MB. Supported: Images, Videos, PDFs, Documents</div>
+                        <label class="form-label">Select Files</label>
+                        <input type="file" class="form-control" name="files[]" id="fileInput" multiple required>
+                        <div class="form-text">Max size: 50MB per file. Supported: Images, Videos, PDFs, Documents</div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Title (Optional)</label>
-                        <input type="text" class="form-control" name="title" id="titleInput">
-                    </div>
+                    <div id="fileList" class="mb-3"></div>
                     <div id="uploadProgress" class="progress d-none mb-3">
                         <div class="progress-bar" role="progressbar" style="width: 0%"></div>
                     </div>
@@ -240,13 +237,34 @@
 
 @section('scripts')
 <script>
+document.getElementById('fileInput').addEventListener('change', function(e) {
+    const fileList = document.getElementById('fileList');
+    fileList.innerHTML = '';
+    
+    if (this.files.length > 0) {
+        const list = document.createElement('div');
+        list.className = 'alert alert-info';
+        list.innerHTML = `<strong>${this.files.length} file(s) selected:</strong><ul class="mb-0 mt-2">`;
+        
+        Array.from(this.files).forEach(file => {
+            list.innerHTML += `<li>${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)</li>`;
+        });
+        
+        list.innerHTML += '</ul>';
+        fileList.appendChild(list);
+    }
+});
+
 function uploadFile() {
     const form = document.getElementById('uploadForm');
     const formData = new FormData(form);
     const progressBar = document.querySelector('#uploadProgress .progress-bar');
     const progressDiv = document.getElementById('uploadProgress');
+    const uploadBtn = event.target;
 
+    uploadBtn.disabled = true;
     progressDiv.classList.remove('d-none');
+    progressBar.style.width = '50%';
 
     fetch('{{ route("admin.media.store") }}', {
         method: 'POST',
@@ -258,12 +276,14 @@ function uploadFile() {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            location.reload();
+            progressBar.style.width = '100%';
+            setTimeout(() => location.reload(), 500);
         }
     })
     .catch(error => {
         alert('Upload failed');
         progressDiv.classList.add('d-none');
+        uploadBtn.disabled = false;
     });
 }
 
