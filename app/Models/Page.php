@@ -57,7 +57,7 @@ class Page extends Model
             return $this->getDefaultHomeContent();
         }
 
-        return array_merge_recursive($this->getDefaultHomeContent(), $content ?? []);
+        return array_replace_recursive($this->getDefaultHomeContent(), $content ?? []);
     }
 
     /**

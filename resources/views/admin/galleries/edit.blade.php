@@ -11,7 +11,7 @@
                 <div>
                     <h1 class="admin-page-title mb-2">
                         <i class="fas fa-edit me-3"></i>
-                        Edit Gallery Image
+                        Edit Gallery Media
                     </h1>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
@@ -48,7 +48,7 @@
                 <div class="card-header bg-white py-3">
                     <h5 class="card-title mb-0">
                         <i class="fas fa-image me-2"></i>
-                        Gallery Image Details
+                        Gallery Media Details
                     </h5>
                 </div>
                 <div class="card-body">
@@ -82,39 +82,45 @@
                                     @error('description')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
-                                    <div class="form-text">Optional description for the image</div>
+                                    <div class="form-text">Optional description for the media</div>
                                 </div>
 
-                                <!-- Current Image -->
+                                <!-- Current Media -->
                                 <div class="mb-3">
-                                    <label class="form-label">Current Image</label>
+                                    <label class="form-label">Current Media</label>
                                     <div class="mb-2">
-                                        <img src="{{ asset('storage/' . $gallery->image) }}"
-                                             alt="{{ $gallery->title }}"
-                                             class="img-thumbnail"
-                                             style="max-width: 200px;">
+                                        @if($gallery->isVideo())
+                                            <video class="img-thumbnail" style="max-width: 200px;" controls>
+                                                <source src="{{ asset('storage/' . $gallery->image) }}" type="video/mp4">
+                                            </video>
+                                        @else
+                                            <img src="{{ asset('storage/' . $gallery->image) }}"
+                                                 alt="{{ $gallery->title }}"
+                                                 class="img-thumbnail"
+                                                 style="max-width: 200px;">
+                                        @endif
                                     </div>
                                 </div>
 
-                                <!-- New Image Upload -->
+                                <!-- New Media Upload -->
                                 <div class="mb-3">
-                                    <label for="image" class="form-label">Replace Image</label>
+                                    <label for="image" class="form-label">Replace Media</label>
                                     <input type="file"
                                            class="form-control @error('image') is-invalid @enderror"
                                            id="image"
                                            name="image"
-                                           accept="image/*">
+                                           accept="image/*,video/*">
                                     @error('image')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                     <div class="form-text">
-                                        Leave empty to keep current image. Supported formats: JPEG, PNG, JPG, GIF, WebP. Maximum size: 5MB
+                                        Leave empty to keep current media. Images: JPEG, PNG, GIF, WebP. Videos: MP4, MOV, AVI, WMV. Max: 100MB
                                     </div>
 
-                                    <!-- New Image Preview -->
+                                    <!-- New Media Preview -->
                                     <div id="imagePreview" class="mt-3" style="display: none;">
-                                        <strong>New Image Preview:</strong>
-                                        <img id="previewImg" src="" alt="Preview" class="img-thumbnail mt-2" style="max-width: 200px;">
+                                        <strong>New Media Preview:</strong>
+                                        <div id="previewContainer" class="mt-2"></div>
                                     </div>
                                 </div>
 
@@ -137,7 +143,7 @@
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
-                                    <div class="form-text">Optional category for organizing images</div>
+                                    <div class="form-text">Optional category for organizing media</div>
                                 </div>
 
                                 <!-- Sort Order -->
@@ -175,7 +181,7 @@
                                 <div class="d-flex gap-2">
                                     <button type="submit" class="btn btn-primary">
                                         <i class="fas fa-save me-1"></i>
-                                        Update Gallery Image
+                                        Update Gallery Media
                                     </button>
                                     <a href="{{ route('admin.galleries.show', $gallery) }}" class="btn btn-info">
                                         <i class="fas fa-eye me-1"></i>
@@ -199,7 +205,7 @@
                 <div class="card-header bg-info text-white">
                     <h6 class="card-title mb-0">
                         <i class="fas fa-info-circle me-2"></i>
-                        Image Information
+                        Media Information
                     </h6>
                 </div>
                 <div class="card-body">
@@ -259,7 +265,7 @@
                         </a>
                         <button type="button" class="btn btn-outline-danger btn-sm" onclick="deleteGallery()">
                             <i class="fas fa-trash me-1"></i>
-                            Delete Image
+                            Delete Media
                         </button>
                     </div>
                 </div>
@@ -269,18 +275,22 @@
                 <div class="card-header bg-primary text-white">
                     <h6 class="card-title mb-0">
                         <i class="fas fa-info-circle me-2"></i>
-                        Image Specifications
+                        Media Specifications
                     </h6>
                 </div>
                 <div class="card-body">
                     <table class="table table-sm">
                         <tr>
-                            <td><strong>Formats:</strong></td>
+                            <td><strong>Image Formats:</strong></td>
                             <td>JPEG, PNG, GIF, WebP</td>
                         </tr>
                         <tr>
+                            <td><strong>Video Formats:</strong></td>
+                            <td>MP4, MOV, AVI, WMV</td>
+                        </tr>
+                        <tr>
                             <td><strong>Max Size:</strong></td>
-                            <td>5MB</td>
+                            <td>100MB</td>
                         </tr>
                         <tr>
                             <td><strong>Recommended:</strong></td>
@@ -303,7 +313,7 @@
             </div>
             <div class="modal-body">
                 <p>Are you sure you want to delete "<strong>{{ $gallery->title }}</strong>"?</p>
-                <p class="text-danger"><small><i class="fas fa-exclamation-triangle me-1"></i>This action cannot be undone and will also delete the image file.</small></p>
+                <p class="text-danger"><small><i class="fas fa-exclamation-triangle me-1"></i>This action cannot be undone and will also delete the media file.</small></p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -320,25 +330,23 @@
 
 @section('scripts')
 <script>
-// Image preview functionality
+// Media preview functionality
 document.getElementById('image').addEventListener('change', function(e) {
     const file = e.target.files[0];
     const preview = document.getElementById('imagePreview');
-    const previewImg = document.getElementById('previewImg');
+    const previewContainer = document.getElementById('previewContainer');
 
     if (file) {
-        // Check file size (5MB = 5 * 1024 * 1024 bytes)
-        if (file.size > 5 * 1024 * 1024) {
-            alert('File size must be less than 5MB');
+        if (file.size > 100 * 1024 * 1024) {
+            alert('File size must be less than 100MB');
             e.target.value = '';
             preview.style.display = 'none';
             return;
         }
 
-        // Check file type
-        const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp'];
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp', 'video/mp4', 'video/quicktime', 'video/x-msvideo', 'video/x-ms-wmv'];
         if (!allowedTypes.includes(file.type)) {
-            alert('Please select a valid image file (JPEG, PNG, GIF, WebP)');
+            alert('Please select a valid image or video file');
             e.target.value = '';
             preview.style.display = 'none';
             return;
@@ -346,7 +354,11 @@ document.getElementById('image').addEventListener('change', function(e) {
 
         const reader = new FileReader();
         reader.onload = function(e) {
-            previewImg.src = e.target.result;
+            if (file.type.startsWith('video/')) {
+                previewContainer.innerHTML = `<video class="img-thumbnail" style="max-width: 200px;" controls><source src="${e.target.result}"></video>`;
+            } else {
+                previewContainer.innerHTML = `<img src="${e.target.result}" class="img-thumbnail" style="max-width: 200px;">`;
+            }
             preview.style.display = 'block';
         };
         reader.readAsDataURL(file);
@@ -366,7 +378,7 @@ document.querySelector('form').addEventListener('submit', function(e) {
     const title = document.getElementById('title').value.trim();
 
     if (!title) {
-        alert('Please enter a title for the gallery image');
+        alert('Please enter a title for the gallery media');
         e.preventDefault();
         return;
     }

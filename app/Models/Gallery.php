@@ -14,6 +14,7 @@ class Gallery extends Model
         'title',
         'description',
         'image',
+        'media_type',
         'category',
         'is_active',
         'sort_order'
@@ -36,5 +37,10 @@ class Gallery extends Model
     public function scopeOrdered($query)
     {
         return $query->orderBy('sort_order', 'asc')->orderBy('created_at', 'desc');
+    }
+
+    public function isVideo()
+    {
+        return $this->media_type === 'video';
     }
 }

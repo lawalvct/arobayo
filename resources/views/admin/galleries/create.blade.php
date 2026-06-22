@@ -11,7 +11,7 @@
                 <div>
                     <h1 class="admin-page-title mb-2">
                         <i class="fas fa-plus me-3"></i>
-                        Add New Gallery Image
+                        Add New Gallery Media
                     </h1>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
@@ -44,7 +44,7 @@
                 <div class="card-header bg-white py-3">
                     <h5 class="card-title mb-0">
                         <i class="fas fa-image me-2"></i>
-                        Gallery Image Details
+                        Gallery Media Details
                     </h5>
                 </div>
                 <div class="card-body">
@@ -77,12 +77,12 @@
                                     @error('description')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
-                                    <div class="form-text">Optional description for the image</div>
+                                    <div class="form-text">Optional description for the media</div>
                                 </div>
 
-                                <!-- Image Upload -->
+                                <!-- Media Upload -->
                                 <div class="mb-3">
-                                    <label class="form-label">Image <span class="text-danger">*</span></label>
+                                    <label class="form-label">Media (Image/Video) <span class="text-danger">*</span></label>
                                     <div class="btn-group w-100 mb-2" role="group">
                                         <input type="radio" class="btn-check" name="image_source" id="upload_new" value="upload" checked>
                                         <label class="btn btn-outline-primary" for="upload_new">
@@ -99,13 +99,13 @@
                                                class="form-control @error('images') is-invalid @enderror"
                                                id="images"
                                                name="images[]"
-                                               accept="image/*"
+                                               accept="image/*,video/*"
                                                multiple>
                                         @error('images')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                         <div class="form-text">
-                                            Select multiple images. Max 5MB per file.
+                                            Select multiple images or videos. Max 100MB per file.
                                         </div>
                                         <div id="imagePreview" class="mt-3 d-flex flex-wrap gap-2"></div>
                                     </div>
@@ -138,7 +138,7 @@
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
-                                    <div class="form-text">Optional category for organizing images</div>
+                                    <div class="form-text">Optional category for organizing media</div>
                                 </div>
 
                                 <!-- Sort Order -->
@@ -176,7 +176,7 @@
                                 <div class="d-flex gap-2">
                                     <button type="submit" class="btn btn-primary">
                                         <i class="fas fa-save me-1"></i>
-                                        Save Gallery Image
+                                        Save Gallery Media
                                     </button>
                                     <button type="submit" name="save_and_new" value="1" class="btn btn-success">
                                         <i class="fas fa-plus me-1"></i>
@@ -200,14 +200,14 @@
                 <div class="card-header bg-primary text-white">
                     <h6 class="card-title mb-0">
                         <i class="fas fa-lightbulb me-2"></i>
-                        Tips for Great Gallery Images
+                        Tips for Great Gallery Media
                     </h6>
                 </div>
                 <div class="card-body">
                     <ul class="list-unstyled">
                         <li class="mb-2">
                             <i class="fas fa-check text-success me-2"></i>
-                            Use high-quality images (at least 800px wide)
+                            Use high-quality images/videos
                         </li>
                         <li class="mb-2">
                             <i class="fas fa-check text-success me-2"></i>
@@ -215,11 +215,11 @@
                         </li>
                         <li class="mb-2">
                             <i class="fas fa-check text-success me-2"></i>
-                            Group related images using categories
+                            Group related media using categories
                         </li>
                         <li class="mb-2">
                             <i class="fas fa-check text-success me-2"></i>
-                            Use sort order to feature important images first
+                            Use sort order to feature important media first
                         </li>
                         <li class="mb-2">
                             <i class="fas fa-check text-success me-2"></i>
@@ -233,18 +233,22 @@
                 <div class="card-header bg-info text-white">
                     <h6 class="card-title mb-0">
                         <i class="fas fa-info-circle me-2"></i>
-                        Image Specifications
+                        Media Specifications
                     </h6>
                 </div>
                 <div class="card-body">
                     <table class="table table-sm">
                         <tr>
-                            <td><strong>Formats:</strong></td>
+                            <td><strong>Image Formats:</strong></td>
                             <td>JPEG, PNG, GIF, WebP</td>
                         </tr>
                         <tr>
+                            <td><strong>Video Formats:</strong></td>
+                            <td>MP4, MOV, AVI, WMV</td>
+                        </tr>
+                        <tr>
                             <td><strong>Max Size:</strong></td>
-                            <td>5MB</td>
+                            <td>100MB</td>
                         </tr>
                         <tr>
                             <td><strong>Recommended:</strong></td>
@@ -399,21 +403,25 @@ document.getElementById('images').addEventListener('change', function(e) {
     preview.innerHTML = '';
 
     files.forEach(file => {
-        if (file.size > 5 * 1024 * 1024) {
-            alert(`${file.name} is too large (max 5MB)`);
+        if (file.size > 100 * 1024 * 1024) {
+            alert(`${file.name} is too large (max 100MB)`);
             return;
         }
 
-        const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp'];
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp', 'video/mp4', 'video/quicktime', 'video/x-msvideo', 'video/x-ms-wmv'];
         if (!allowedTypes.includes(file.type)) {
-            alert(`${file.name} is not a valid image`);
+            alert(`${file.name} is not a valid image or video`);
             return;
         }
 
         const reader = new FileReader();
         reader.onload = function(e) {
             const div = document.createElement('div');
-            div.innerHTML = `<img src="${e.target.result}" class="img-thumbnail" style="width: 150px; height: 150px; object-fit: cover;">`;
+            if (file.type.startsWith('video/')) {
+                div.innerHTML = `<video class="img-thumbnail" style="width: 150px; height: 150px; object-fit: cover;"><source src="${e.target.result}"></video>`;
+            } else {
+                div.innerHTML = `<img src="${e.target.result}" class="img-thumbnail" style="width: 150px; height: 150px; object-fit: cover;">`;
+            }
             preview.appendChild(div);
         };
         reader.readAsDataURL(file);

@@ -41,7 +41,7 @@ class GalleryController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'images' => 'nullable|array',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+            'images.*' => 'file|mimes:jpeg,png,jpg,gif,webp,mp4,mov,avi,wmv|max:102400',
             'media_ids' => 'nullable|array',
             'media_ids.*' => 'exists:media,id',
             'category' => 'nullable|string|max:100',
@@ -57,10 +57,12 @@ class GalleryController extends Controller
         if ($request->filled('media_ids')) {
             foreach ($request->media_ids as $mediaId) {
                 $media = \App\Models\Media::findOrFail($mediaId);
+                $mediaType = in_array($media->type, ['video', 'mp4', 'mov', 'avi']) ? 'video' : 'image';
                 Gallery::create([
                     'title' => $validated['title'],
                     'description' => $validated['description'],
                     'image' => $media->path,
+                    'media_type' => $mediaType,
                     'category' => $validated['category'],
                     'is_active' => $isActive,
                     'sort_order' => $sortOrder + $count
@@ -71,12 +73,15 @@ class GalleryController extends Controller
 
         // Handle file uploads
         if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
-                $path = $image->store('galleries', 'public');
+            foreach ($request->file('images') as $file) {
+                $path = $file->store('galleries', 'public');
+                $mimeType = $file->getMimeType();
+                $mediaType = str_starts_with($mimeType, 'video/') ? 'video' : 'image';
                 Gallery::create([
                     'title' => $validated['title'],
                     'description' => $validated['description'],
                     'image' => $path,
+                    'media_type' => $mediaType,
                     'category' => $validated['category'],
                     'is_active' => $isActive,
                     'sort_order' => $sortOrder + $count
@@ -119,7 +124,7 @@ class GalleryController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+            'image' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp,mp4,mov,avi,wmv|max:102400',
             'category' => 'nullable|string|max:100',
             'is_active' => 'boolean',
             'sort_order' => 'nullable|integer|min:0',
@@ -133,7 +138,10 @@ class GalleryController extends Controller
             if ($gallery->image) {
                 Storage::disk('public')->delete($gallery->image);
             }
-            $validated['image'] = $request->file('image')->store('galleries', 'public');
+            $file = $request->file('image');
+            $validated['image'] = $file->store('galleries', 'public');
+            $mimeType = $file->getMimeType();
+            $validated['media_type'] = str_starts_with($mimeType, 'video/') ? 'video' : 'image';
         }
 
         $gallery->update($validated);

@@ -29,17 +29,26 @@
 .page-content {
     background: #f8f9fa;
     min-height: 60vh;
+    padding-top: 7rem;
+    padding-bottom: 4rem;
+}
+
+.page-header {
+    padding-top: 1rem;
+    margin-bottom: 2rem;
 }
 
 .page-title {
     color: #2596be;
     font-weight: 700;
     font-size: 2.5rem;
+    line-height: 1.2;
 }
 
 .page-subtitle {
     font-size: 1.2rem;
     line-height: 1.6;
+    color: #6c757d;
 }
 
 .page-body {
@@ -132,8 +141,21 @@
 }
 
 @media (max-width: 768px) {
+    .page-content {
+        padding-top: 6rem;
+        padding-bottom: 2.5rem;
+    }
+
+    .page-header {
+        margin-bottom: 1.5rem;
+    }
+
     .page-title {
         font-size: 2rem;
+    }
+
+    .page-subtitle {
+        font-size: 1rem;
     }
 
     .page-body {

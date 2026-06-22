@@ -11,7 +11,7 @@
                 <div>
                     <h1 class="admin-page-title mb-2">
                         <i class="fas fa-image me-3"></i>
-                        Gallery Image Details
+                        Gallery Media Details
                     </h1>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
@@ -66,11 +66,17 @@
                 </div>
                 <div class="card-body p-0">
                     <div class="text-center bg-light p-4">
-                        <img src="{{ asset('storage/' . $gallery->image) }}"
-                             alt="{{ $gallery->title }}"
-                             class="img-fluid rounded shadow"
-                             style="max-height: 500px; cursor: pointer;"
-                             onclick="openFullScreen()">
+                        @if($gallery->isVideo())
+                            <video class="rounded shadow" style="max-height: 500px; max-width: 100%;" controls>
+                                <source src="{{ asset('storage/' . $gallery->image) }}" type="video/mp4">
+                            </video>
+                        @else
+                            <img src="{{ asset('storage/' . $gallery->image) }}"
+                                 alt="{{ $gallery->title }}"
+                                 class="img-fluid rounded shadow"
+                                 style="max-height: 500px; cursor: pointer;"
+                                 onclick="openFullScreen()">
+                        @endif
                         <div class="mt-3">
                             <a href="{{ asset('storage/' . $gallery->image) }}"
                                target="_blank"
@@ -80,7 +86,7 @@
                             </a>
                             <button type="button"
                                     class="btn btn-outline-info btn-sm ms-2"
-                                    onclick="downloadImage()">
+                                    onclick="downloadMedia()">
                                 <i class="fas fa-download me-1"></i>
                                 Download
                             </button>
@@ -112,7 +118,7 @@
                 <div class="card-header bg-primary text-white">
                     <h6 class="card-title mb-0">
                         <i class="fas fa-info-circle me-2"></i>
-                        Image Information
+                        Media Information
                     </h6>
                 </div>
                 <div class="card-body">
@@ -175,7 +181,7 @@
                     <div class="d-grid gap-2">
                         <a href="{{ route('admin.galleries.edit', $gallery) }}" class="btn btn-primary btn-sm">
                             <i class="fas fa-edit me-1"></i>
-                            Edit Image
+                            Edit Media
                         </a>
 
                         @if($gallery->is_active)
@@ -211,7 +217,7 @@
                                 class="btn btn-danger btn-sm"
                                 onclick="deleteGallery()">
                             <i class="fas fa-trash me-1"></i>
-                            Delete Image
+                            Delete Media
                         </button>
                     </div>
                 </div>
@@ -229,11 +235,11 @@
                     <div class="d-grid gap-2">
                         <a href="{{ route('admin.galleries.create') }}" class="btn btn-outline-primary btn-sm">
                             <i class="fas fa-plus me-1"></i>
-                            Add New Image
+                            Add New Media
                         </a>
                         <a href="{{ route('admin.galleries.index') }}" class="btn btn-outline-secondary btn-sm">
                             <i class="fas fa-list me-1"></i>
-                            All Gallery Images
+                            All Gallery Media
                         </a>
                         <a href="{{ route('gallery.index') }}" target="_blank" class="btn btn-outline-success btn-sm">
                             <i class="fas fa-eye me-1"></i>
@@ -255,9 +261,15 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-0 text-center">
-                <img src="{{ asset('storage/' . $gallery->image) }}"
-                     alt="{{ $gallery->title }}"
-                     class="img-fluid">
+                @if($gallery->isVideo())
+                    <video class="w-100" controls>
+                        <source src="{{ asset('storage/' . $gallery->image) }}" type="video/mp4">
+                    </video>
+                @else
+                    <img src="{{ asset('storage/' . $gallery->image) }}"
+                         alt="{{ $gallery->title }}"
+                         class="img-fluid">
+                @endif
             </div>
             @if($gallery->description)
             <div class="modal-footer">
@@ -278,7 +290,7 @@
             </div>
             <div class="modal-body">
                 <p>Are you sure you want to delete "<strong>{{ $gallery->title }}</strong>"?</p>
-                <p class="text-danger"><small><i class="fas fa-exclamation-triangle me-1"></i>This action cannot be undone and will also delete the image file.</small></p>
+                <p class="text-danger"><small><i class="fas fa-exclamation-triangle me-1"></i>This action cannot be undone and will also delete the media file.</small></p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -307,8 +319,8 @@ function deleteGallery() {
     modal.show();
 }
 
-// Download image function
-function downloadImage() {
+// Download media function
+function downloadMedia() {
     const link = document.createElement('a');
     link.href = '{{ asset("storage/" . $gallery->image) }}';
     link.download = '{{ $gallery->title }}.{{ pathinfo($gallery->image, PATHINFO_EXTENSION) }}';

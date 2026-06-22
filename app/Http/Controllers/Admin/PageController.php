@@ -196,11 +196,40 @@ class PageController extends Controller
             'events_title' => 'nullable|string|max:255',
         ]);
 
+        $heroSlides = [];
+
+        foreach ($request->input('hero_slides', []) as $slide) {
+            if (!is_array($slide)) {
+                continue;
+            }
+
+            $normalizedSlide = [
+                'title' => $slide['title'] ?? '',
+                'subtitle' => $slide['subtitle'] ?? '',
+                'button_text' => $slide['button_text'] ?? '',
+                'button_link' => $slide['button_link'] ?? '',
+                'image' => $slide['image'] ?? '',
+            ];
+
+            $hasSlideContent = false;
+
+            foreach ($normalizedSlide as $slideValue) {
+                if (trim((string) $slideValue) !== '') {
+                    $hasSlideContent = true;
+                    break;
+                }
+            }
+
+            if ($hasSlideContent) {
+                $heroSlides[] = $normalizedSlide;
+            }
+        }
+
         // Build home page content as JSON
         $homeContent = [
             'hero' => [
                 'enabled' => $request->boolean('hero_enabled', true),
-                'slides' => $request->hero_slides ?? []
+                'slides' => $heroSlides
             ],
             'mission' => [
                 'enabled' => $request->boolean('mission_enabled', true),
@@ -303,7 +332,7 @@ class PageController extends Controller
         }
 
         // Merge with defaults to ensure all sections exist
-        return array_merge_recursive($defaultContent, $decoded);
+        return array_replace_recursive($defaultContent, $decoded);
     }
 
     /**

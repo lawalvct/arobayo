@@ -1,17 +1,49 @@
+@php
+    $configuredHeroSlides = $homeContent['hero']['slides'] ?? [];
+    $hasConfiguredHeroSlides = $homeContent && is_array($configuredHeroSlides) && count($configuredHeroSlides) > 0;
+    $fallbackSliderImages = [
+        'uploads/slides/slider1.jpeg',
+        'uploads/slides/slider2.jpeg',
+        'uploads/slides/slider3.jpeg',
+    ];
+
+    $resolveSliderImage = function ($imagePath, $fallbackImage) {
+        $imagePath = trim((string) $imagePath);
+
+        if ($imagePath === '') {
+            $imagePath = $fallbackImage;
+        }
+
+        if (preg_match('/^(https?:)?\/\//', $imagePath) || substr($imagePath, 0, 1) === '/') {
+            return $imagePath;
+        }
+
+        return asset($imagePath);
+    };
+@endphp
+
 <!-- Dynamic slider styles -->
 <style>
-  
+    @if($hasConfiguredHeroSlides)
+        @foreach($configuredHeroSlides as $slide)
+            @php
+                $fallbackImage = $fallbackSliderImages[$loop->index % count($fallbackSliderImages)];
+                $slideImageUrl = $resolveSliderImage($slide['image'] ?? '', $fallbackImage);
+            @endphp
+            .hero-slide.slide-{{ $loop->iteration }} { background-image: url('{{ $slideImageUrl }}'); }
+        @endforeach
+    @else
         .hero-slide.slide-1 { background-image: url('{{ asset('uploads/slides/slider1.jpeg') }}'); }
         .hero-slide.slide-2 { background-image: url('{{ asset('uploads/slides/slider2.jpeg') }}'); }
         .hero-slide.slide-3 { background-image: url('{{ asset('uploads/slides/slider3.jpeg') }}'); }
-
+    @endif
 </style>
 
 <!-- Hero Slider Section -->
     <section class="hero-slider" id="heroSlider">
-        @if($homeContent && isset($homeContent['hero']['slides']) && count($homeContent['hero']['slides']) > 0)
-            @foreach($homeContent['hero']['slides'] as $index => $slide)
-                <div class="hero-slide slide-{{ $index + 1 }} {{ $index === 0 ? 'active' : '' }}" data-slide="{{ $index }}">
+        @if($hasConfiguredHeroSlides)
+            @foreach($configuredHeroSlides as $slide)
+                <div class="hero-slide slide-{{ $loop->iteration }} {{ $loop->first ? 'active' : '' }}" data-slide="{{ $loop->index }}">
                     <div class="container">
                         <div class="row">
                             <div class="col-lg-8">
@@ -128,9 +160,9 @@
 
         <!-- Slider Navigation Dots -->
         <div class="slider-nav">
-            @if($homeContent && isset($homeContent['hero']['slides']))
-                @foreach($homeContent['hero']['slides'] as $index => $slide)
-                    <div class="slider-dot {{ $index === 0 ? 'active' : '' }}" data-slide="{{ $index }}"></div>
+            @if($hasConfiguredHeroSlides)
+                @foreach($configuredHeroSlides as $slide)
+                    <div class="slider-dot {{ $loop->first ? 'active' : '' }}" data-slide="{{ $loop->index }}"></div>
                 @endforeach
             @else
                 <div class="slider-dot active" data-slide="0"></div>

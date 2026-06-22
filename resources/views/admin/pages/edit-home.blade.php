@@ -136,7 +136,7 @@
                                         <div class="d-flex justify-content-between align-items-center">
                                             <h6 class="mb-0 fw-bold">
                                                 <i class="fas fa-play-circle me-2"></i>
-                                                Slide {{ $index + 1 }}
+                                                <span class="slide-number">Slide {{ $index + 1 }}</span>
                                             </h6>
                                             <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeSlide(this)">
                                                 <i class="fas fa-trash me-1"></i>
@@ -182,7 +182,7 @@
                                                            value="{{ isset($slide['image']) && !is_array($slide['image']) ? $slide['image'] : '' }}"
                                                            id="image_{{ $index }}"
                                                            placeholder="Image URL or path">
-                                                    <button type="button" class="btn btn-outline-secondary"
+                                                    <button type="button" class="btn btn-outline-secondary image-select-button"
                                                             onclick="selectImage('image_{{ $index }}')">
                                                         <i class="fas fa-image"></i>
                                                     </button>
@@ -881,46 +881,44 @@ function toggleSection(section, enabled) {
 
 function addSlide() {
     const slidesContainer = document.getElementById('heroSlides');
+    const newSlideIndex = slideCounter;
     const slideHtml = `
-        <div class="slide-item border rounded p-3 mb-3" data-slide="${slideCounter}">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h6 class="mb-0">Slide ${slideCounter + 1}</h6>
-                <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeSlide(this)">
-                    <i class="fas fa-trash"></i>
-                </button>
+        <div class="slide-editor-card mb-4" data-slide="${newSlideIndex}">
+            <div class="slide-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0 fw-bold">
+                        <i class="fas fa-play-circle me-2"></i>
+                        <span class="slide-number">Slide ${newSlideIndex + 1}</span>
+                    </h6>
+                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeSlide(this)">
+                        <i class="fas fa-trash me-1"></i>
+                        Remove
+                    </button>
+                </div>
             </div>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label class="form-label">Slide Title</label>
-                        <input type="text" class="form-control" name="hero_slides[\${slideCounter}][title]">
+            <div class="slide-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Slide Title</label>
+                        <input type="text" class="form-control" name="hero_slides[${newSlideIndex}][title]" placeholder="Enter compelling headline">
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label class="form-label">Subtitle</label>
-                        <input type="text" class="form-control" name="hero_slides[\${slideCounter}][subtitle]">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Subtitle</label>
+                        <input type="text" class="form-control" name="hero_slides[${newSlideIndex}][subtitle]" placeholder="Supporting description">
                     </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="mb-3">
-                        <label class="form-label">Button Text</label>
-                        <input type="text" class="form-control" name="hero_slides[\${slideCounter}][button_text]">
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold">Button Text</label>
+                        <input type="text" class="form-control" name="hero_slides[${newSlideIndex}][button_text]" placeholder="e.g., Learn More">
                     </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="mb-3">
-                        <label class="form-label">Button Link</label>
-                        <input type="text" class="form-control" name="hero_slides[\${slideCounter}][button_link]">
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold">Button Link</label>
+                        <input type="text" class="form-control" name="hero_slides[${newSlideIndex}][button_link]" placeholder="/about-us or external URL">
                     </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="mb-3">
-                        <label class="form-label">Background Image</label>
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold">Background Image</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" name="hero_slides[\${slideCounter}][image]" id="image_\${slideCounter}">
-                            <button type="button" class="btn btn-outline-secondary" onclick="selectImage('image_\${slideCounter}')">
+                            <input type="text" class="form-control" name="hero_slides[${newSlideIndex}][image]" id="image_${newSlideIndex}" placeholder="Image URL or path">
+                            <button type="button" class="btn btn-outline-secondary image-select-button" onclick="selectImage('image_${newSlideIndex}')">
                                 <i class="fas fa-image"></i>
                             </button>
                         </div>
@@ -931,19 +929,48 @@ function addSlide() {
     `;
 
     slidesContainer.insertAdjacentHTML('beforeend', slideHtml);
-    slideCounter++;
+    renumberSlides();
 }
 
 function removeSlide(button) {
-    const slideItem = button.closest('.slide-item');
-    slideItem.remove();
+    const slideItem = button.closest('.slide-editor-card');
 
-    // Renumber slides
-    const slides = document.querySelectorAll('.slide-item');
+    if (!slideItem) {
+        return;
+    }
+
+    slideItem.remove();
+    renumberSlides();
+}
+
+function renumberSlides() {
+    const slides = document.querySelectorAll('#heroSlides .slide-editor-card');
+
     slides.forEach((slide, index) => {
-        const title = slide.querySelector('h6');
-        title.textContent = `Slide ${index + 1}`;
+        slide.dataset.slide = index;
+
+        const title = slide.querySelector('.slide-number');
+        if (title) {
+            title.textContent = `Slide ${index + 1}`;
+        }
+
+        slide.querySelectorAll('[name^="hero_slides["]').forEach(input => {
+            input.name = input.name.replace(/hero_slides\[[^\]]+\]/, `hero_slides[${index}]`);
+        });
+
+        const imageInput = slide.querySelector('[name$="[image]"]');
+        const imageButton = slide.querySelector('.image-select-button');
+
+        if (imageInput) {
+            imageInput.id = `image_${index}`;
+        }
+
+        if (imageButton) {
+            imageButton.setAttribute('onclick', `selectImage('image_${index}')`);
+        }
     });
+
+    slideCounter = slides.length;
 }
 </script>
 @endsection

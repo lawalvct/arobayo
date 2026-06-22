@@ -173,10 +173,16 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <img src="{{ asset('storage/' . $gallery->image) }}"
-                                             alt="{{ $gallery->title }}"
-                                             class="img-thumbnail"
-                                             style="width: 60px; height: 60px; object-fit: cover;">
+                                        @if($gallery->isVideo())
+                                            <video class="img-thumbnail" style="width: 60px; height: 60px; object-fit: cover;">
+                                                <source src="{{ asset('storage/' . $gallery->image) }}" type="video/mp4">
+                                            </video>
+                                        @else
+                                            <img src="{{ asset('storage/' . $gallery->image) }}"
+                                                 alt="{{ $gallery->title }}"
+                                                 class="img-thumbnail"
+                                                 style="width: 60px; height: 60px; object-fit: cover;">
+                                        @endif
                                     </td>
                                     <td>
                                         <div>

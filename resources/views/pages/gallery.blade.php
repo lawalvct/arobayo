@@ -38,13 +38,20 @@
                 <div class="row g-4">
                     @foreach($galleries as $gallery)
                     <div class="col-lg-3 col-md-4 col-sm-6">
-                        <div class="card border-0 shadow-sm card-hover">
-                            <img src="{{ asset('storage/' . $gallery->image) }}"
-                                 alt="{{ $gallery->title }}"
-                                 class="card-img-top"
-                                 style="height: 200px; object-fit: cover;"
-                                 data-bs-toggle="modal"
-                                 data-bs-target="#imageModal{{ $gallery->id }}">
+                        <div class="card border-0 shadow-sm card-hover" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#mediaModal{{ $gallery->id }}">
+                            @if($gallery->isVideo())
+                                <video class="card-img-top" style="height: 200px; object-fit: cover;">
+                                    <source src="{{ asset('storage/' . $gallery->image) }}" type="video/mp4">
+                                </video>
+                                <div class="position-absolute top-50 start-50 translate-middle">
+                                    <i class="fas fa-play-circle fa-3x text-white" style="opacity: 0.8;"></i>
+                                </div>
+                            @else
+                                <img src="{{ asset('storage/' . $gallery->image) }}"
+                                     alt="{{ $gallery->title }}"
+                                     class="card-img-top"
+                                     style="height: 200px; object-fit: cover;">
+                            @endif
 
                             @if($gallery->title || $gallery->category)
                             <div class="card-body p-3">
@@ -58,8 +65,8 @@
                             @endif
                         </div>
 
-                        <!-- Modal for enlarged image -->
-                        <div class="modal fade" id="imageModal{{ $gallery->id }}" tabindex="-1">
+                        <!-- Modal for enlarged media -->
+                        <div class="modal fade" id="mediaModal{{ $gallery->id }}" tabindex="-1">
                             <div class="modal-dialog modal-lg modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -67,9 +74,15 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                     </div>
                                     <div class="modal-body p-0">
-                                        <img src="{{ asset('storage/' . $gallery->image) }}"
-                                             alt="{{ $gallery->title }}"
-                                             class="img-fluid w-100">
+                                        @if($gallery->isVideo())
+                                            <video class="w-100" controls>
+                                                <source src="{{ asset('storage/' . $gallery->image) }}" type="video/mp4">
+                                            </video>
+                                        @else
+                                            <img src="{{ asset('storage/' . $gallery->image) }}"
+                                                 alt="{{ $gallery->title }}"
+                                                 class="img-fluid w-100">
+                                        @endif
                                     </div>
                                     @if($gallery->description)
                                     <div class="modal-footer">

@@ -2,6 +2,7 @@
 
 @section('title', $homePage ? $homePage->title : 'Home - Egbe Arobayo')
 
+@section('content')
 @if($homePage && $homeContent)
     @if($homeContent['hero']['enabled'] ?? true)
         @include('pages.partials.home-slider')
@@ -43,6 +44,8 @@
     </div>
 @endif
 
+@endsection
+
 
 
 @section('scripts')
@@ -59,6 +62,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const totalSlides = slides.length;
     let autoSlideInterval;
 
+    if (!slider || totalSlides === 0 || dots.length === 0 || !prevBtn || !nextBtn) {
+        return;
+    }
+
     // Initialize slider
     function initSlider() {
         showSlide(0);
@@ -70,12 +77,16 @@ document.addEventListener('DOMContentLoaded', function() {
         // Hide all slides
         slides.forEach((slide, i) => {
             slide.classList.remove('active');
-            dots[i].classList.remove('active');
+            if (dots[i]) {
+                dots[i].classList.remove('active');
+            }
         });
 
         // Show current slide
         slides[index].classList.add('active');
-        dots[index].classList.add('active');
+        if (dots[index]) {
+            dots[index].classList.add('active');
+        }
         currentSlide = index;
     }
 
